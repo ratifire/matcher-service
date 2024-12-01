@@ -11,7 +11,7 @@ import java.net.URI
 
 
 @Configuration
-class SqsConfig {
+class SqsConfig { // need to be reconfigured for prod env
 
     @Bean
     fun amazonSQSAsync(): SqsAsyncClient {

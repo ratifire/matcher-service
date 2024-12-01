@@ -5,7 +5,7 @@ services:
     container_name: elasticmq
     ports:
       - "9324:9324" # REST API
-      - "9325:9325" # Web interface (if enabled in config)
+      - "9325:9325" # Web interface
     volumes:
       - ./src/main/resources/elasticmq.conf:/opt/elasticmq.conf
     command: -Dconfig.file=/opt/elasticmq.conf

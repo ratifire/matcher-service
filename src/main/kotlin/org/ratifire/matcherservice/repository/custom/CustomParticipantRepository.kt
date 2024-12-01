@@ -60,7 +60,7 @@ class CustomParticipantRepositoryImpl(private val mongoTemplate: MongoTemplate) 
         val query = Query().apply {
             addCriteria(Criteria.where("participantId").`is`(participantId))
             addCriteria(Criteria.where("specialization").`is`(specialization))
-            addCriteria(Criteria.where("mastery").`is`(mastery))
+            addCriteria(Criteria.where("MasteryLevel").`is`(mastery))
             addCriteria(Criteria.where("type").`is`(type))
         }
         return mongoTemplate.exists(query, ParticipantEntity::class.java)

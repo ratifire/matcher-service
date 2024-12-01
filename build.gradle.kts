@@ -31,6 +31,9 @@ dependencies {
     kapt ("org.mapstruct:mapstruct-processor:1.4.2.Final")
     implementation ("org.mapstruct:mapstruct:1.4.2.Final")
     testImplementation ("io.mockk:mockk:1.12.0")
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.1")
+    implementation("software.amazon.awssdk:sqs:2.29.23") // SQS Client with version
+
 
 }
 

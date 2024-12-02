@@ -3,7 +3,7 @@
   "desiredInterview": 2,
   "type": "CANDIDATE",
   "specialization": "Software Engineering",
-  "masteryLevel": "MIDDlE",
+  "masteryLevel": "MIDDLE",
   "hardSkills": ["Java", "Kotlin", "Spring Boot"],
   "softSkills": ["Problem Solving", "Team Collaboration"],
   "dates": ["2024-11-01T09:00:00Z", "2024-11-02T09:00:00Z"],

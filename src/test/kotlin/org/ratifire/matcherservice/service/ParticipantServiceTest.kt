@@ -16,19 +16,17 @@ import java.util.*
 
 class ParticipantServiceTest {
 
-   private val participantRepository = mockk<ParticipantRepository>()
+    private val participantRepository = mockk<ParticipantRepository>()
     private val participantMapper = mockk<ParticipantMapper>()
     private val participantService = ParticipantService(participantRepository, participantMapper, MasteryLeveLMapper)
 
     @Test
     fun saveTest() {
 
-        val dates = arrayOf("2024-11-01T09:00:00Z")
-            .map { Date.from(Instant.parse(it)) }
-            .toSet()
+        val dates = arrayOf("2024-11-01T09:00:00Z").map { Date.from(Instant.parse(it)) }.toSet()
 
-        val participant =  getParticipantDto(dates)
-        val mock =  mockk<ParticipantEntity>()
+        val participant = getParticipantDto(dates)
+        val mock = mockk<ParticipantEntity>()
 
         every {
             participantRepository.save(any<ParticipantEntity>())
@@ -42,17 +40,14 @@ class ParticipantServiceTest {
 
         verify(exactly = 1) { participantRepository.save(any<ParticipantEntity>()) }
         verify(exactly = 1) { participantMapper.toEntity(any<ParticipantDto>()) }
-
     }
 
     @Test
     fun saveEntityTest() {
 
-        val dates = arrayOf("2024-11-01T09:00:00Z")
-            .map { Date.from(Instant.parse(it)) }
-            .toSet()
+        val dates = arrayOf("2024-11-01T09:00:00Z").map { Date.from(Instant.parse(it)) }.toSet()
 
-        val participant =  getParticipantEntity(dates)
+        val participant = getParticipantEntity(dates)
 
         every {
             participantRepository.save(any<ParticipantEntity>())
@@ -60,25 +55,21 @@ class ParticipantServiceTest {
         participantService.save(participant)
 
         verify(exactly = 1) { participantRepository.save(any<ParticipantEntity>()) }
-
     }
+
     @Test
     fun isParticipantRequestExistTest() {
 
-        val dates = arrayOf("2024-11-01T09:00:00Z")
-            .map { Date.from(Instant.parse(it)) }
-            .toSet()
+        val dates = arrayOf("2024-11-01T09:00:00Z").map { Date.from(Instant.parse(it)) }.toSet()
 
-        val participant =  getParticipantDto(dates)
+        val participant = getParticipantDto(dates)
 
         every {
-            participantRepository.exist(any(), any(),any(),any())
+            participantRepository.exist(any(), any(), any(), any())
         } returns true
 
         participantService.isParticipantRequestExist(participant)
 
-        verify(exactly = 1) { participantRepository.exist(any(), any(),any(),any()) }
-
+        verify(exactly = 1) { participantRepository.exist(any(), any(), any(), any()) }
     }
-
 }

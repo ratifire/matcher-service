@@ -17,21 +17,15 @@ class SqsConfig { // need to be reconfigured for prod env
     @Bean
     @Profile("!prod")
     fun amazonSQSAsync(): SqsAsyncClient {
-        return SqsAsyncClient.builder()
-            .endpointOverride(URI.create("http://localhost:9324"))
-            .credentialsProvider(
+        return SqsAsyncClient.builder().endpointOverride(URI.create("http://localhost:9324")).credentialsProvider(
                 StaticCredentialsProvider.create(
                     AwsBasicCredentials.create("accessKey", "secretKey")
                 )
-            )
-            .region(Region.US_EAST_1)
-            .build()
+            ).region(Region.US_EAST_1).build()
     }
 
     @Bean
     fun sqsTemplate(sqsAsyncClient: SqsAsyncClient): SqsTemplate {
-        return SqsTemplate.builder()
-            .sqsAsyncClient(sqsAsyncClient)
-            .build()
+        return SqsTemplate.builder().sqsAsyncClient(sqsAsyncClient).build()
     }
 }

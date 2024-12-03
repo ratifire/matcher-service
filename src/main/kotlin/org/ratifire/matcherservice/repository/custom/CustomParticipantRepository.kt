@@ -10,20 +10,17 @@ import org.springframework.data.mongodb.core.query.Query
 interface CustomParticipantRepository {
 
     fun findCandidates(participant: ParticipantEntity): List<ParticipantEntity>
-
     fun exist(participantId: Int, specialization: String, mastery: Int, type: ParticipantType): Boolean
 }
 
 class CustomParticipantRepositoryImpl(private val mongoTemplate: MongoTemplate) : CustomParticipantRepository {
-
 
     override fun findCandidates(participant: ParticipantEntity): List<ParticipantEntity> {
 
         val masteryAndMarks = when (participant.type) {
             ParticipantType.CANDIDATE -> {
                 Criteria().orOperator(
-                    Criteria.where("MasteryLevel").gte(participant.masteryLevel),
-                    Criteria().andOperator(
+                    Criteria.where("MasteryLevel").gte(participant.masteryLevel), Criteria().andOperator(
                         Criteria.where("MasteryLevel").`is`(participant.masteryLevel),
                         Criteria.where("averageMark").gte(participant.averageMark)
                     )
@@ -32,17 +29,15 @@ class CustomParticipantRepositoryImpl(private val mongoTemplate: MongoTemplate) 
 
             ParticipantType.INTERVIEWER -> {
                 Criteria().orOperator(
-                    Criteria.where("MasteryLevel").lt(participant.masteryLevel),
-                    Criteria().andOperator(
+                    Criteria.where("MasteryLevel").lt(participant.masteryLevel), Criteria().andOperator(
                         Criteria.where("MasteryLevel").`is`(participant.masteryLevel),
                         Criteria.where("averageMark").lt(participant.averageMark)
                     )
                 )
             }
         }
-        val participantIdCriteria = Criteria.where("participantId")
-            .ne(participant.participantId)
-            .nin(participant.blackList)
+        val participantIdCriteria =
+            Criteria.where("participantId").ne(participant.participantId).nin(participant.blackList)
 
         val query = Query().apply {
             addCriteria(Criteria.where("type").ne(participant.type))

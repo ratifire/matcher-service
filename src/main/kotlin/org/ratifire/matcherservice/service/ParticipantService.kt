@@ -23,8 +23,7 @@ class ParticipantService(
         return participantRepository.save(participant)
     }
 
-    fun isParticipantRequestExist(participant: ParticipantDto) = participantRepository
-        .exist(
+    fun isParticipantRequestExist(participant: ParticipantDto) = participantRepository.exist(
             participant.participantId,
             participant.specialization,
             masteryLevelMapper.masteryLevelToInt(participant.masteryLevel),

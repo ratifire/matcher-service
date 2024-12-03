@@ -14,7 +14,7 @@ class ParticipantController(
 ) {
 
     @PostMapping
-    fun save(@RequestBody participant: ParticipantDto){
+    fun save(@RequestBody participant: ParticipantDto) {
         participantService.save(participant)
     }
 }

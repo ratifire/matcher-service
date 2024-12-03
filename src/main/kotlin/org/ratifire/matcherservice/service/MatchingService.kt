@@ -33,40 +33,35 @@ class MatchingService(
     }
 
     fun matchParticipant(participant: ParticipantEntity) {
-        findMatch(participant)
-            .onEach {
-                val (interviewerId, candidateId) = when (it.key.type) {
-                    ParticipantType.INTERVIEWER -> it.key.participantId to participant.participantId
-                    ParticipantType.CANDIDATE -> participant.participantId to it.key.participantId
-                }
-                participantSender.sendMatchedInterviewParticipants(
-                    PairedParticipantDto(
-                        interviewerId,
-                        candidateId,
-                        it.value
-                    )
-                )
-                logger.info("interview is paired") // remove
+        findMatch(participant).onEach {
+            val (interviewerId, candidateId) = when (it.key.type) {
+                ParticipantType.INTERVIEWER -> it.key.participantId to participant.participantId
+                ParticipantType.CANDIDATE -> participant.participantId to it.key.participantId
             }
-            .map {
-                participantService.save(
-                    it.key.copy(
-                        dates = it.key.dates - it.value,
-                        active = it.key.desiredInterview > it.key.matchedInterview + 1,
-                        matchedInterview = it.key.matchedInterview + 1
-                    )
+            participantSender.sendMatchedInterviewParticipants(
+                PairedParticipantDto(
+                    interviewerId, candidateId, it.value
                 )
-                logger.info("interviewer is updated") // remove
-                it.value
-            }.toSet()
-            .let {
-                participantService.save(
-                    participant.copy(
-                        dates = participant.dates - it,
-                        active = participant.desiredInterview > it.size,
-                        matchedInterview = it.size
-                    )
+            )
+            logger.info("interview is paired") // remove
+        }.map {
+            participantService.save(
+                it.key.copy(
+                    dates = it.key.dates - it.value,
+                    active = it.key.desiredInterview > it.key.matchedInterview + 1,
+                    matchedInterview = it.key.matchedInterview + 1
                 )
-            }
+            )
+            logger.info("interviewer is updated") // remove
+            it.value
+        }.toSet().let {
+            participantService.save(
+                participant.copy(
+                    dates = participant.dates - it,
+                    active = participant.desiredInterview > it.size,
+                    matchedInterview = it.size
+                )
+            )
+        }
     }
 }

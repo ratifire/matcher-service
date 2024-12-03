@@ -28,6 +28,6 @@ class ParticipantListener(
         matchingService.matchParticipant(participantEntity)
     }
 
- private fun validateParticipantMessage(participant: ParticipantDto) =
+    private fun validateParticipantMessage(participant: ParticipantDto) =
         validateParticipant(participant) && !participantService.isParticipantRequestExist(participant)
 }

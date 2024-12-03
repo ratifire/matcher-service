@@ -1,5 +1,5 @@
 package org.ratifire.matcherservice.enums
 
 enum class MasteryLevel {
-    JUNIOR,MIDDLE,SENIOR
+    JUNIOR, MIDDLE, SENIOR
 }

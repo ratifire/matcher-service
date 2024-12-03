@@ -15,13 +15,10 @@ fun getParticipantEntity(dates: Set<Date>, desiredInterview: Int = 3) = Particip
     active = true,
     masteryLevel = 1,
     hardSkills = setOf(
-        "Java",
-        "Spring",
-        "Hibernate"
+        "Java", "Spring", "Hibernate"
     ),
     softSkills = setOf(
-        "Analytical Thinking",
-        "Mentoring"
+        "Analytical Thinking", "Mentoring"
     ),
     dates = dates,
     averageMark = 3.2,
@@ -35,13 +32,10 @@ fun getParticipantDto(dates: Set<Date>, desiredInterview: Int = 3) = Participant
     specialization = "Software Engineering",
     masteryLevel = MasteryLevel.SENIOR,
     hardSkills = setOf(
-        "Java",
-        "Spring",
-        "Hibernate"
+        "Java", "Spring", "Hibernate"
     ),
     softSkills = setOf(
-        "Analytical Thinking",
-        "Mentoring"
+        "Analytical Thinking", "Mentoring"
     ),
     dates = dates,
     averageMark = 3.2,

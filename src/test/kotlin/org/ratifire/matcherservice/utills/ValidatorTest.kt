@@ -28,12 +28,8 @@ class ValidatorTest {
     fun validateParticipantPositiveTest() {
 
         val dates = arrayOf(
-            "2024-11-01T09:00:00Z",
-            "2024-11-02T09:00:00Z",
-            "2024-11-03T09:00:00Z",
-            "2024-11-05T09:00:00Z"
-        ).map { Date.from(Instant.parse(it)) }
-            .toSet()
+            "2024-11-01T09:00:00Z", "2024-11-02T09:00:00Z", "2024-11-03T09:00:00Z", "2024-11-05T09:00:00Z"
+        ).map { Date.from(Instant.parse(it)) }.toSet()
 
         val participantDto = participant.copy(dates = dates)
         Assertions.assertTrue(validateParticipant(participantDto))
@@ -44,8 +40,7 @@ class ValidatorTest {
 
         val dates = arrayOf(
             "2024-11-01T09:00:00Z",
-        ).map { Date.from(Instant.parse(it)) }
-            .toSet()
+        ).map { Date.from(Instant.parse(it)) }.toSet()
 
         val participantDto = participant.copy(dates = dates, desiredInterview = 10)
         Assertions.assertFalse(validateParticipant(participantDto))

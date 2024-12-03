@@ -9,8 +9,7 @@ class ParticipantSender(
     private val rabbitmqTemplate: SqsTemplate
 ) {
 
-    fun sendMatchedInterviewParticipants(pairedParticipantDto: PairedParticipantDto){
+    fun sendMatchedInterviewParticipants(pairedParticipantDto: PairedParticipantDto) {
         rabbitmqTemplate.send("matched-participant", pairedParticipantDto)
     }
-
 }

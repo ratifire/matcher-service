@@ -8,17 +8,15 @@ import org.ratifire.matcherservice.entity.ParticipantEntity
 import org.ratifire.matcherservice.enums.MasteryLevel
 import org.springframework.stereotype.Component
 
-@Mapper(componentModel = "spring", uses = [MasteryLeveLMapper::class] )
+@Mapper(componentModel = "spring", uses = [MasteryLeveLMapper::class])
 interface ParticipantMapper {
-
 
     @Mapping(target = "active", constant = "true")
     @Mapping(source = "masteryLevel", target = "masteryLevel", qualifiedByName = ["masteryLevelToInt"])
-    fun  toEntity(dto: ParticipantDto): ParticipantEntity
+    fun toEntity(dto: ParticipantDto): ParticipantEntity
 
     @Mapping(source = "masteryLevel", target = "masteryLevel", qualifiedByName = ["intToMasteryLevel"])
-    fun  fromEntity(dto: ParticipantEntity): ParticipantDto
-
+    fun fromEntity(dto: ParticipantEntity): ParticipantDto
 }
 
 @Component

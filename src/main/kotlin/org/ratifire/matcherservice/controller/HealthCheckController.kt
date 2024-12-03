@@ -10,5 +10,4 @@ class HealthCheckController {
 
     @GetMapping
     fun health() = "I am alive"
-
 }

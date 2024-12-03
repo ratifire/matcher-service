@@ -22,12 +22,12 @@ class ParticipantListener(
         if (!validateParticipantMessage(participant)) {
             logger.warning(" participant message with id ${participant.participantId} is not valid")
             return
-        } // add some logic to hand invalid massage
-        println(participantService.isParticipantRequestExist(participant))
+        } // todo  add some logic to hand invalid massage
+
         val participantEntity = participantService.save(participant)
         matchingService.matchParticipant(participantEntity)
     }
 
- private fun validateParticipantMessage(participant: ParticipantDto) =
+    private fun validateParticipantMessage(participant: ParticipantDto) =
         validateParticipant(participant) && !participantService.isParticipantRequestExist(participant)
 }

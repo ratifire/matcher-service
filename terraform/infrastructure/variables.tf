@@ -15,7 +15,7 @@ variable "instance_type" {
 
 variable "repository_name" {
   description = "Repository name"
-  default     = "backend-service"
+  type = string
 }
 
 variable "list_of_ports" {
@@ -28,22 +28,42 @@ variable "cidr_blocks" {
   default     = ["0.0.0.0/0"]
 }
 
-variable "back_port" {
+variable "matcher_port" {
   description = "Port number on which back service is listening"
   default     = 8080
 }
 
-variable "db_instance_identifier" {
-  description = "Name of db_instance_identifier"
-  default     = "pg-backend"
-}
-
-variable "db_name" {
-  description = "Name of database"
-  default     = "backend"
-}
-
 variable "s3_bucket_name" {
   description = "Name of the S3 bucket for the backend"
+  type        = string
+}
+
+variable "aws_ami_value_name" {
+  description = "The name of the AMI to use"
+  type        = string
+}
+
+variable "aws_key_pair_name" {
+  description = "The name of the key pair to use"
+  type        = string
+}
+
+variable "aws_iam_ex_role_name" {
+  description = "The name of the IAM role to use"
+  type        = string
+}
+
+variable "aws_iam_inst_role_name" {
+  description = "The name of the IAM role to use"
+  type        = string
+}
+
+variable "aws_inst_profile_name" {
+  description = "The name of the IAM instance profile to use"
+  type        = string
+}
+
+variable "security_group_name" {
+  description = "The name of the security group to use"
   type        = string
 }

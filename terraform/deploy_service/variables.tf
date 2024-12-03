@@ -1,9 +1,9 @@
-variable "back_cluster_name" {
+variable "matcher_cluster_name" {
   description = "Back cluster name."
   default     = "backend-cluster"
 }
 
-variable "back_container_name" {
+variable "matcher_container_name" {
   description = "Back container name."
   default     = "back-container"
 }

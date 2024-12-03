@@ -20,17 +20,16 @@ class MatchingService(
 
     fun findMatch(participant: ParticipantEntity): Map<ParticipantEntity, Date> {
         val candidates = participantRepository.findCandidates(participant)
+            .sortedByDescending { participant.hardSkills.intersect(it.hardSkills).size }
 
-        println(candidates)
+
         val availableDate = participant.dates.toMutableSet()
         return candidates.mapNotNull { p ->
             availableDate.find { it in p.dates }?.let {
                 availableDate.remove(it)
                 p to it
             }
-        }.toMap()
-            .toSortedMap(compareByDescending { participant.hardSkills.intersect(it.hardSkills).size })
-            .entries.take(participant.desiredInterview).associate { it.toPair() }
+        }.toMap().entries.take(participant.desiredInterview).associate { it.toPair() }
     }
 
     fun matchParticipant(participant: ParticipantEntity) {

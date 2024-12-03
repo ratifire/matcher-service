@@ -1,0 +1,112 @@
+[
+  {
+    "participantId": 1,
+    "desiredInterview": 3,
+    "type": "INTERVIEWER",
+    "specialization": "Software Engineering",
+    "masteryLevel": 3,
+    "hardSkills": [
+      "Java",
+      "Spring",
+      "Hibernate",
+      "Collection"
+    ],
+    "softSkills": [
+      "Analytical Thinking",
+      "Mentoring"
+    ],
+    "dates": [
+      "2024-11-01T09:00:00Z",
+      "2024-11-02T09:00:00Z",
+      "2024-11-03T09:00:00Z",
+      "2024-11-05T09:00:00Z"
+    ],
+    "blackList": [
+      101,
+      2,
+      10
+    ],
+    "averageMark": 7
+  },
+  {
+    "participantId": 2,
+    "desiredInterview": 2,
+    "type": "INTERVIEWER",
+    "specialization": "Software Engineering",
+    "masteryLevel": 2,
+    "hardSkills": [
+      "Python",
+      "Java",
+      "Spring",
+      "TensorFlow"
+
+    ],
+    "softSkills": [
+      "Analytical Thinking",
+      "Mentoring"
+    ],
+    "dates": [
+      "2024-11-01T09:00:00Z",
+      "2024-11-02T09:00:00Z",
+      "2024-11-03T09:00:00Z"
+    ],
+    "blackList": [
+      101,
+      2,
+      10
+    ],
+    "averageMark": 4
+  },
+  {
+    "participantId": 3,
+    "desiredInterview": 2,
+    "type": "INTERVIEWER",
+    "specialization": "Software Engineering",
+    "masteryLevel": 1,
+    "hardSkills": [
+      "Java",
+      "Machine Learning",
+      "TensorFlow"
+    ],
+    "softSkills": [
+      "Analytical Thinking",
+      "Mentoring"
+    ],
+    "dates": [
+      "2024-11-01T09:00:00Z",
+      "2024-11-05T09:00:00Z"
+    ],
+    "blackList": [
+      101,
+      2,
+      10
+    ],
+    "averageMark": 10
+  },
+  {
+    "participantId": 4,
+    "desiredInterview": 2,
+    "type": "INTERVIEWER",
+    "specialization": "Software Engineering",
+    "masteryLevel": 3,
+    "hardSkills": [
+      "Python",
+      "Machine Learning",
+      "TensorFlow"
+    ],
+    "softSkills": [
+      "Analytical Thinking",
+      "Mentoring"
+    ],
+    "dates": [
+      "2024-11-01T09:00:00Z",
+      "2024-11-02T09:00:00Z"
+    ],
+    "blackList": [
+      101,
+      2,
+      10
+    ],
+    "averageMark": 3
+  }
+]

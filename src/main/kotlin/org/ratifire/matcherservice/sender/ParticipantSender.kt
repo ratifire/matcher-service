@@ -12,5 +12,4 @@ class ParticipantSender(
     fun sendMatchedInterviewParticipants(pairedParticipantDto: PairedParticipantDto){
         rabbitmqTemplate.send("matched-participant", pairedParticipantDto)
     }
-
 }

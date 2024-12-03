@@ -8,9 +8,9 @@ variable "matcher_container_name" {
   default     = "back-container"
 }
 
-variable "back_repository_name" {
+variable "matcher_repository_name" {
   description = "Repository name"
-  default     = "backend-service"
+  type        = string
 }
 
 variable "instance_type" {
@@ -22,19 +22,19 @@ variable "image_tag" {
   default = "latest"
 }
 
-variable "back_port" {
+variable "matcher_port" {
   description = "Port number on which back service is listening"
   default     = 8080
 }
 
 variable "subdomain_name" {
   description = "Subdomain name"
-  default     = "server.devrate.org"
+  type        = string
 }
 
 variable "domain_name" {
   description = "Domain name"
-  default     = "devrate.org"
+  type        = string
 }
 
 variable "region" {
@@ -48,4 +48,59 @@ variable "vpc" {
 
 variable "target_group_name" {
   default = "http-ecs-back-tg"
+}
+
+variable "security_group_name" {
+  description = "The name of the security group to use"
+  type        = string
+}
+
+variable "aws_key_pair_name" {
+  description = "The name of the key pair to use"
+  type        = string
+}
+
+variable "aws_inst_profile_name" {
+  description = "The name of the IAM instance profile to use"
+  type        = string
+}
+
+variable "aws_iam_ex_role_name" {
+  description = "The name of the IAM role to use"
+  type        = string
+}
+
+variable "aws_iam_inst_role_name" {
+  description = "The name of the IAM role to use"
+  type        = string
+}
+
+variable "aws_ami_value_name" {
+  description = "The name of the AMI to use"
+  type        = string
+}
+
+variable "instance_name" {
+  description = "The name of the instance to use"
+  type        = string
+}
+
+variable "aws_ecs_capacity_provider_name" {
+  description = "The name of the capacity provider to use"
+  type        = string
+}
+
+
+variable "aws_ecs_service_name" {
+  description = "The name of the service to use"
+  type        = string
+}
+variable "aws_lb_name" {
+  description = "The name of the load balancer to use"
+  type        = string
+}
+
+variable "aws_ecs_task_definition_family" {
+  description = "The name of the task definition to use"
+  type        = string
 }

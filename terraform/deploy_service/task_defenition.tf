@@ -1,11 +1,11 @@
 resource "aws_ecs_task_definition" "task_definition" {
 
-  family = "backend_td"
+  family = var.aws_ecs_task_definition_family
 
   container_definitions = jsonencode([
     {
-      name              = "back-container",
-      image             = "${data.aws_caller_identity.current_user.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.back_repository_name}:${var.image_tag}",
+      name              = var.matcher_container_name,
+      image             = "${data.aws_caller_identity.current_user.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.matcher_repository_name}:${var.image_tag}",
       cpu               = 0,
       memory            = 819,
       memoryReservation = 819,
@@ -17,9 +17,9 @@ resource "aws_ecs_task_definition" "task_definition" {
       },
       portMappings = [
         {
-          name          = "${var.back_container_name}-${var.back_port}-tcp",
-          containerPort = var.back_port,
-          hostPort      = var.back_port,
+          name          = "${var.matcher_container_name}-${var.matcher_port}-tcp",
+          containerPort = var.matcher_port,
+          hostPort      = var.matcher_port,
           protocol      = "tcp",
           appProtocol   = "http"
         }
@@ -33,10 +33,6 @@ resource "aws_ecs_task_definition" "task_definition" {
         {
           name  = "PG_USERNAME",
           value = "backend"
-        },
-        {
-          name  = "PG_HOST",
-          value = data.aws_db_instance.db_host.address
         },
         {
           name  = "PG_PASSWORD",
@@ -64,7 +60,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          awslogs-group         = "/ecs/${var.back_container_name}",
+          awslogs-group         = "/ecs/${var.matcher_container_name}",
           awslogs-create-group  = "true",
           awslogs-region        = var.region,
           awslogs-stream-prefix = "ecs"

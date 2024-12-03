@@ -1,20 +1,20 @@
-resource "aws_ecs_cluster" "backend_cluster" {
-  name = var.back_cluster_name
+resource "aws_ecs_cluster" "matcher_cluster" {
+  name = var.matcher_cluster_name
 }
 
-resource "aws_launch_template" "ecs_back_launch" {
-  name_prefix            = "ecs_back_launch"
+resource "aws_launch_template" "ecs_matcher_launch" {
+  name_prefix            = "ecs_matcher_launch"
   image_id               = data.aws_ami.aws_linux_latest_ecs.image_id
   instance_type          = var.instance_type
-  vpc_security_group_ids = [data.aws_security_group.vpc_backend_security_group.id]
+  vpc_security_group_ids = [data.aws_security_group.vpc_matcher_security_group.id]
   key_name               = data.aws_key_pair.keypair.key_name
   user_data = base64encode(<<-EOF
       #!/bin/bash
-      echo ECS_CLUSTER=${aws_ecs_cluster.backend_cluster.name} >> /etc/ecs/ecs.config;
+      echo ECS_CLUSTER=${aws_ecs_cluster.matcher_cluster.name} >> /etc/ecs/ecs.config;
     EOF
   )
   iam_instance_profile {
-    arn = data.aws_iam_instance_profile.aws_iam_instance_profile_backend.arn
+    arn = data.aws_iam_instance_profile.aws_iam_instance_profile_matcher.arn
   }
 
   metadata_options {
@@ -33,11 +33,11 @@ resource "aws_launch_template" "ecs_back_launch" {
 
 }
 
-resource "aws_ecs_capacity_provider" "back_capacity_provider" {
-  name = "backend-ec2-capacity-provider"
+resource "aws_ecs_capacity_provider" "matcher_capacity_provider" {
+  name = var.aws_ecs_capacity_provider_name
 
   auto_scaling_group_provider {
-    auto_scaling_group_arn         = aws_autoscaling_group.ecs_back_asg.arn
+    auto_scaling_group_arn         = aws_autoscaling_group.ecs_matcher_asg.arn
     managed_termination_protection = "DISABLED"
     managed_scaling {
       maximum_scaling_step_size = 2
@@ -48,26 +48,26 @@ resource "aws_ecs_capacity_provider" "back_capacity_provider" {
   }
 
   tags = {
-    Name = "back-ec2-capacity-provider"
+    Name = var.aws_ecs_capacity_provider_name
   }
 }
 
-resource "aws_ecs_cluster_capacity_providers" "back_cluster_capacity_provider" {
-  cluster_name       = var.back_cluster_name
-  capacity_providers = [aws_ecs_capacity_provider.back_capacity_provider.name]
+resource "aws_ecs_cluster_capacity_providers" "matcher_cluster_capacity_provider" {
+  cluster_name       = var.matcher_cluster_name
+  capacity_providers = [aws_ecs_capacity_provider.matcher_capacity_provider.name]
 
   default_capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.back_capacity_provider.name
+    capacity_provider = aws_ecs_capacity_provider.matcher_capacity_provider.name
     base              = 1
     weight            = 1
   }
 }
 
-resource "aws_autoscaling_group" "ecs_back_asg" {
-  name = "ASGn-${aws_launch_template.ecs_back_launch.name_prefix}"
+resource "aws_autoscaling_group" "ecs_matcher_asg" {
+  name = "ASGn-${aws_launch_template.ecs_matcher_launch.name_prefix}"
   launch_template {
-    id      = aws_launch_template.ecs_back_launch.id
-    version = aws_launch_template.ecs_back_launch.latest_version
+    id      = aws_launch_template.ecs_matcher_launch.id
+    version = aws_launch_template.ecs_matcher_launch.latest_version
   }
   min_size                  = 2
   max_size                  = 2
@@ -85,7 +85,7 @@ resource "aws_autoscaling_group" "ecs_back_asg" {
   }
   dynamic "tag" {
     for_each = {
-      Name  = "Ecs-Back-Instance-ASG"
+      Name  = var.instance_name
       Owner = "Max Matveichuk"
     }
     content {
@@ -99,13 +99,13 @@ resource "aws_autoscaling_group" "ecs_back_asg" {
   }
   protect_from_scale_in = false
   depends_on = [
-    aws_launch_template.ecs_back_launch
+    aws_launch_template.ecs_matcher_launch
   ]
 }
 
-resource "aws_ecs_service" "back_services" {
-  name                               = "back-service"
-  cluster                            = var.back_cluster_name
+resource "aws_ecs_service" "matcher_services" {
+  name                               = var.aws_ecs_service_name
+  cluster                            = var.matcher_cluster_name
   task_definition                    = aws_ecs_task_definition.task_definition.arn
   scheduling_strategy                = "REPLICA"
   desired_count                      = 2
@@ -113,15 +113,15 @@ resource "aws_ecs_service" "back_services" {
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
   capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.back_capacity_provider.name
+    capacity_provider = aws_ecs_capacity_provider.matcher_capacity_provider.name
     base              = 1
     weight            = 100
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.http_ecs_back_tg.arn
-    container_name   = var.back_container_name
-    container_port   = var.back_port
+    target_group_arn = aws_lb_target_group.http_ecs_matcher_tg.arn
+    container_name   = var.matcher_container_name
+    container_port   = var.matcher_port
   }
   ordered_placement_strategy {
     type  = "spread"
@@ -132,18 +132,18 @@ resource "aws_ecs_service" "back_services" {
   }
 }
 
-resource "aws_lb" "back_ecs_alb" {
-  name               = "ecs-back-alb"
+resource "aws_lb" "matcher_ecs_alb" {
+  name               = var.aws_lb_name
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [data.aws_security_group.vpc_backend_security_group.id]
+  security_groups    = [data.aws_security_group.vpc_matcher_security_group.id]
   subnets            = data.aws_subnets.default_subnets.ids
 
 }
 
-resource "aws_lb_target_group" "http_ecs_back_tg" {
+resource "aws_lb_target_group" "http_ecs_matcher_tg" {
   name                 = var.target_group_name
-  port                 = var.back_port
+  port                 = var.matcher_port
   protocol             = "HTTP"
   vpc_id               = data.aws_vpcs.all_vpcs.ids[0]
   deregistration_delay = "30"

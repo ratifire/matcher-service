@@ -3,7 +3,7 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle build --no-daemon
 
-FROM openjdk:21-jre-slim
+FROM FROM openjdk:21
 
 RUN mkdir /app
 

@@ -31,3 +31,7 @@ aws_lb_name = "ecs-matcher-alb"
 matcher_repository_name = "matcher-repository"
 
 aws_ecs_task_definition_family = "matcher-td"
+
+matcher_cluster_name = "matcher-cluster"
+
+matcher_container_name = "matcher-container"

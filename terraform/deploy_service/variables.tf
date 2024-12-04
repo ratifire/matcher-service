@@ -1,11 +1,11 @@
 variable "matcher_cluster_name" {
   description = "Back cluster name."
-  default     = "backend-cluster"
+  default     = "matcher-cluster"
 }
 
 variable "matcher_container_name" {
   description = "Back container name."
-  default     = "back-container"
+  default     = "matcher-container"
 }
 
 variable "matcher_repository_name" {
@@ -47,7 +47,7 @@ variable "vpc" {
 }
 
 variable "target_group_name" {
-  default = "http-ecs-back-tg"
+  default = "http-ecs-matcher-tg"
 }
 
 variable "security_group_name" {

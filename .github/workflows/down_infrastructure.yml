@@ -3,14 +3,14 @@ name: Down_infrastructure
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Select environment to deploy (prod, dev)'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-          - dev
-          - prod
+#      environment:
+#        description: 'Select environment to deploy (prod, dev)'
+#        required: true
+#        default: 'dev'
+#        type: choice
+#        options:
+#          - dev
+#          - prod
 
 permissions:
   id-token: write
@@ -20,7 +20,7 @@ jobs:
   terraform:
     name: Terraform destroy infrastructure
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'dev' }}
+#    environment: ${{ github.event.inputs.environment || 'dev' }}
     env:
       working-directory: terraform/infrastructure
     defaults:
@@ -42,10 +42,10 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Select backend configuration
+    - name: Select matcher configuration
       run: |
-        echo "Selecting backend configuration for environment: ${{ github.event.inputs.environment }}"
-        BACKEND_FILE="/home/runner/work/devrate-service/devrate-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.backend"
+        echo "Selecting backend configuration for environment: dev"
+        BACKEND_FILE="/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/dev.backend"
         if [[ ! -f "$BACKEND_FILE" ]]; then
           echo "Error: Backend file $BACKEND_FILE does not exist."
           exit 1
@@ -54,18 +54,18 @@ jobs:
 
     - name: Select .tfvars file based on environment
       run: |
-        echo "Selecting .tfvars file for environment: ${{ github.event.inputs.environment }}"
-        if [[ ! -f "/home/runner/work/devrate-service/devrate-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.tfvars" ]]; then
-          echo "Error: File ${{ github.event.inputs.environment }}.tfvars does not exist in /home/runner/work/devrate-service/devrate-service/${{ env.working-directory }}."
+        echo "Selecting .tfvars file for environment: dev"
+        if [[ ! -f "/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/dev.tfvars" ]]; then
+          echo "Error: File dev.tfvars does not exist in /home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}."
           exit 1
         fi
 
     - name: Terraform Init
       run: |
-        terraform init -backend-config="/home/runner/work/devrate-service/devrate-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.backend" -reconfigure
+        terraform init -backend-config="/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/dev.backend" -reconfigure
 
     - name: Terraform Format
       run: terraform fmt -check
 
     - name: Terraform destroy
-      run: terraform destroy -auto-approve -input=false -var-file=${{ github.event.inputs.environment }}.tfvars
+      run: terraform destroy -auto-approve -input=false -var-file=dev.tfvars

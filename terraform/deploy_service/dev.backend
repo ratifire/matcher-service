@@ -1,3 +1,3 @@
-bucket  = "devrate-bucket-back-1"
-key     = "AWS/build-test-backend-deploy-tstates/terraform.tfstate"
+bucket  = "skillzzy-matcher-terraform-dev"
+key     = "AWS/build-test-matcher-deploy-tstates/terraform.tfstate"
 region  = "eu-north-1"

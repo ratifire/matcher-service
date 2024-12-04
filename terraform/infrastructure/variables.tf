@@ -1,5 +1,5 @@
 variable "max_untagged_images" {
-  description = "The maximum number of untagged images to retain in the repository."
+  description = "The maximum number of untagged images to retain in the repository"
   default     = 2
 }
 
@@ -15,7 +15,7 @@ variable "instance_type" {
 
 variable "repository_name" {
   description = "Repository name"
-  type = string
+  type        = string
 }
 
 variable "list_of_ports" {

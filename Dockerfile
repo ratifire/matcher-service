@@ -1,5 +1,5 @@
 # Этап сборки с использованием Gradle
-FROM gradle:5.6.2-jdk21 AS build
+FROM gradle:7.6-jdk17 AS build
 
 # Копируем проект и устанавливаем рабочую директорию
 COPY --chown=gradle:gradle . /home/gradle/src

@@ -3,11 +3,20 @@ name: Main_init
 on:
   schedule:
     - cron: '00 05 * * *'
-
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment to deploy (prod, dev)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
 jobs:
   deploy:
     runs-on: ubuntu-latest
-#    environment: ${{ github.event.inputs.environment || 'dev' }}
+    environment: ${{ github.event.inputs.environment || 'dev' }}
 
     steps:
       - name: Checkout code

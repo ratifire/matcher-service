@@ -5,15 +5,6 @@ env:
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Select environment to deploy (prod, dev)'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-          - dev
-          - prod
 
 permissions:
   id-token: write
@@ -23,7 +14,6 @@ jobs:
   terraform:
     name: Terraform deploy service to AWS
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
     env:
       working-directory: terraform/deploy_service
     defaults:
@@ -48,20 +38,20 @@ jobs:
       - name: Select .tfvars file based on environment
         run: |
           echo "Selecting .tfvars file for environment: ${{ github.event.inputs.environment }}"
-          if [[ ! -f "/home/runner/work/devrate-service/devrate-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.tfvars" ]]; then
-            echo "Error: File ${{ github.event.inputs.environment }}.tfvars does not exist in /home/runner/work/devrate-service/devrate-service/${{ env.working-directory }}."
+          if [[ ! -f "/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/dev.tfvars" ]]; then
+            echo "Error: File dev.tfvars does not exist in /home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}."
             exit 1
           fi
 
       - name: Terraform Init
         run: |
-          terraform init -backend-config="/home/runner/work/devrate-service/devrate-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.backend" -reconfigure
+          terraform init -backend-config="/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/dev.backend" -reconfigure
 
       - name: Terraform Format
         run: terraform fmt -check
 
       - name: Terraform Plan
-        run: terraform plan -input=false -var-file=${{ github.event.inputs.environment }}.tfvars
+        run: terraform plan -input=false -var-file=dev.tfvars
 
       - name: Terraform apply
-        run: terraform apply -var="image_tag=${{ env.IMAGE_TAG }}" -var-file="${{ github.workspace }}/${{ env.working-directory }}/${{ github.event.inputs.environment }}.tfvars" -auto-approve -input=false
+        run: terraform apply -var="image_tag=${{ env.IMAGE_TAG }}" -var-file="${{ github.workspace }}/${{ env.working-directory }}/dev.tfvars" -auto-approve -input=false

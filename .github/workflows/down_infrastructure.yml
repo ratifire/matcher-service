@@ -2,7 +2,7 @@ name: Down_infrastructure
 
 on:
   workflow_dispatch:
-    inputs:
+#    inputs:
 #      environment:
 #        description: 'Select environment to deploy (prod, dev)'
 #        required: true

@@ -4,7 +4,7 @@ domain_name = "skillzzy.com"
 
 subdomain_name = "matcher.dev.skillzzy.com"
 
-vpc = "vpc-00b9e5046c1050334"
+vpc = "vpc-0032e90317069a534"
 
 instance_type = "t3.micro"
 

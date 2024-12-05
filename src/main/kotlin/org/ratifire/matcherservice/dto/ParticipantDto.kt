@@ -25,3 +25,7 @@ data class PairedParticipantDto(
     val candidateParticipantId: ObjectId?,
     val date: Date
 )
+
+data class UpdateParticipantDto(
+    val dates: Set<Date>
+)

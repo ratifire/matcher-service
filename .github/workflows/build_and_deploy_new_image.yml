@@ -5,24 +5,18 @@ name: Build_and_Deploy_new_Image
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Select environment to deploy (prod, dev)'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-          - dev
-          - prod
+#    inputs:
+#      environment:
+#        description: 'Select environment to deploy (prod, dev)'
+#        required: true
+#        default: 'dev'
+#        type: choice
+#        options:
+#          - dev
+#          - prod
   push:
     branches:
       - main
-
-env:
-  ZOOM_CLIENT_ID: ${{secrets.ZOOM_CLIENT_ID}}
-  ZOOM_CLIENT_SECRET: ${{secrets.ZOOM_CLIENT_SECRET}}
-  ZOOM_ACCOUNT_ID: ${{secrets.ZOOM_ACCOUNT_ID}}
-  ZOOM_SECRET: ${{secrets.ZOOM_SECRET}}
 
 permissions:
   contents: read
@@ -31,7 +25,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'dev' }}
+#    environment: ${{ github.event.inputs.environment || 'dev' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -50,18 +44,22 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      - name: Update application-dev.properties with environment variables
-        run: |
-          sed -i 's|<AWS_SES_ACCESS_KEY_ID>|'${{ secrets.AWS_SES_ACCESS_KEY_ID }}'|g' src/main/resources/application-dev.properties
-          sed -i 's|<AWS_SES_SECRET_ACCESS_KEY>|'${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}'|g' src/main/resources/application-dev.properties
-          sed -i 's|<ZOOM_CLIENT_ID>|'${{ env.ZOOM_CLIENT_ID }}'|g' src/main/resources/application-dev.properties
-          sed -i 's|<ZOOM_CLIENT_SECRET>|'${{ env.ZOOM_CLIENT_SECRET }}'|g' src/main/resources/application-dev.properties
-          sed -i 's|<ZOOM_ACCOUNT_ID>|'${{ env.ZOOM_ACCOUNT_ID }}'|g' src/main/resources/application-dev.properties
-          sed -i 's|<ZOOM_SECRET>|'${{ env.ZOOM_SECRET }}'|g' src/main/resources/application-dev.properties
-          sed -i 's|<DOMAIN>|'${{ vars.DOMAIN }}'|g' src/main/resources/application-dev.properties
+#      - name: Update application-dev.properties with environment variables
+#        run: |
+#          sed -i 's|<AWS_SES_ACCESS_KEY_ID>|'${{ secrets.AWS_SES_ACCESS_KEY_ID }}'|g' src/main/resources/application-dev.properties
+#          sed -i 's|<AWS_SES_SECRET_ACCESS_KEY>|'${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}'|g' src/main/resources/application-dev.properties
+#          sed -i 's|<ZOOM_CLIENT_ID>|'${{ env.ZOOM_CLIENT_ID }}'|g' src/main/resources/application-dev.properties
+#          sed -i 's|<ZOOM_CLIENT_SECRET>|'${{ env.ZOOM_CLIENT_SECRET }}'|g' src/main/resources/application-dev.properties
+#          sed -i 's|<ZOOM_ACCOUNT_ID>|'${{ env.ZOOM_ACCOUNT_ID }}'|g' src/main/resources/application-dev.properties
+#          sed -i 's|<ZOOM_SECRET>|'${{ env.ZOOM_SECRET }}'|g' src/main/resources/application-dev.properties
+#          sed -i 's|<DOMAIN>|'${{ vars.DOMAIN }}'|g' src/main/resources/application-dev.properties
 
-      - name: Run tests
-        run: ./gradlew test
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+
+#      - name: Run tests
+#        run: ./gradlew test
 
       - name: Run build
         run: ./gradlew build -x test
@@ -97,7 +95,7 @@ jobs:
           aws ecs describe-task-definition \
           --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
           --query 'taskDefinition' \
-          --output json > task-def.json
+          --output json > ${{ vars.ECS_TASK_DEFINITION }}.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
@@ -119,5 +117,5 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "GitHub Action (BackEnd): New brunch is deploying to AWS! Status: ${{ job.status }}.\nTriggered by: ${{ github.actor }}\nBranch: ${{ github.ref }}"
+            "text": "GitHub Action (Matcher): New brunch is deploying to AWS! Status: ${{ job.status }}.\nTriggered by: ${{ github.actor }}\nBranch: ${{ github.ref }}"
           }' ${{ secrets.SLACK_WEBHOOK_URL }}

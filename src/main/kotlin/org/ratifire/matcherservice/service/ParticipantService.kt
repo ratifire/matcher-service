@@ -9,6 +9,8 @@ import org.ratifire.matcherservice.exception.InvalidParticipantDataException
 import org.ratifire.matcherservice.repository.ParticipantRepository
 import org.ratifire.matcherservice.utills.validateParticipant
 import org.springframework.stereotype.Service
+import java.util.Date
+import kotlin.NoSuchElementException
 
 @Service
 class ParticipantService(
@@ -33,26 +35,35 @@ class ParticipantService(
         participantRepository.deleteById(id)
     }
 
-    fun update(
-        id: String,
-        desiredInterview: Int,
-        updateParticipantDto: UpdateParticipantDto,
-        isRejected: Boolean = false
-    ) {
+    fun updateRejected(id: String, date: Date) {
+        val participantEntity = participantRepository
+            .findById(id)
+            .orElseThrow { NoSuchElementException("Participant with id: $id not found") }
+
+        participantRepository.save(
+            participantEntity.copy(
+                dates = participantEntity.dates.plus(date),
+                active = participantEntity.desiredInterview > participantEntity.matchedInterview - 1,
+                matchedInterview = participantEntity.matchedInterview - 1
+            )
+        )
+    }
+
+    fun update(id: String, desiredInterview: Int, updateParticipantDto: UpdateParticipantDto) {
         if (!validateParticipant(updateParticipantDto.dates, desiredInterview)) {
             throw InvalidParticipantDataException(" number of dates is less than the desired number of interviews")
         }
         val participantEntity = participantRepository
             .findById(id)
             .orElseThrow { NoSuchElementException("Participant with id: $id not found") }
-        val updatedParticipant = participantEntity.copy(
-            dates = updateParticipantDto.dates,
-            desiredInterview = desiredInterview,
-            active = desiredInterview > participantEntity.matchedInterview,
-            matchedInterview = if (isRejected) participantEntity.matchedInterview - 1 else participantEntity.matchedInterview
-        )
 
-        participantRepository.save(updatedParticipant)
+        participantRepository.save(
+            participantEntity.copy(
+                dates = updateParticipantDto.dates,
+                desiredInterview = desiredInterview,
+                active = desiredInterview > participantEntity.matchedInterview,
+            )
+        )
     }
 
     fun isParticipantRequestExist(participant: ParticipantDto) = participantRepository.exist(

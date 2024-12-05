@@ -15,7 +15,8 @@ import org.ratifire.matcherservice.repository.ParticipantRepository
 import org.ratifire.matcherservice.testUtills.getParticipantDto
 import org.ratifire.matcherservice.testUtills.getParticipantEntity
 import java.time.Instant
-import java.util.*
+import java.util.Date
+import java.util.Optional
 
 class ParticipantServiceTest {
 
@@ -102,7 +103,38 @@ class ParticipantServiceTest {
     }
 
     @Test
-    fun updateParticipantSuccessTest() {
+    fun updateRejectedSuccessTest() {
+        val participantId = "123"
+        val date = Date.from(Instant.parse("2024-11-01T09:00:00Z"))
+
+        val existingParticipant = getParticipantEntity(emptySet())
+
+        every { participantRepository.findById(participantId) } returns Optional.of(existingParticipant)
+        every { participantRepository.save(any()) } returns existingParticipant
+
+        participantService.updateRejected(participantId, date)
+
+        verify(exactly = 1) { participantRepository.findById(participantId) }
+        verify(exactly = 1) { participantRepository.save(any()) }
+    }
+
+    @Test
+    fun updateRejectedParticipantNotFoundTest() {
+        val participantId = "123"
+        val date = Date.from(Instant.parse("2024-11-01T09:00:00Z"))
+
+        every { participantRepository.findById(participantId) } returns Optional.empty()
+
+        assertThrows<NoSuchElementException> {
+            participantService.updateRejected(participantId, date)
+        }
+
+        verify(exactly = 1) { participantRepository.findById(any()) }
+        verify(exactly = 0) { participantRepository.save(any()) }
+    }
+
+    @Test
+    fun updateSuccessTest() {
         val participantId = "123"
         val desiredInterview = 2
         val dates = arrayOf("2024-11-01T09:00:00Z", "2024-11-02T10:00:00Z")
@@ -121,7 +153,7 @@ class ParticipantServiceTest {
     }
 
     @Test
-    fun updateParticipantInvalidDatesTest() {
+    fun updateInvalidDatesTest() {
         val participantId = "123"
         val desiredInterview = 3
         val dates = emptySet<Date>()

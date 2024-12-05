@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.format.annotation.DateTimeFormat
+import java.util.Date
 
 @RestController
 @RequestMapping("/participants")
@@ -28,13 +31,20 @@ class ParticipantController(
         participantService.delete(id)
     }
 
-    @PutMapping("/{id}/{desiredInterview}")
-    fun rejectInterview(@PathVariable id: String, @PathVariable desiredInterview: Int, @RequestBody updateParticipant: UpdateParticipantDto) {
-        participantService.update(id, desiredInterview, updateParticipant, true)
+    @PutMapping("/{id}")
+    fun rejectInterview(
+        @PathVariable id: String,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) date: Date
+    ) {
+        participantService.updateRejected(id, date)
     }
 
-    @PatchMapping("/{id}/{desiredInterview}")
-    fun update(@PathVariable id: String, @PathVariable desiredInterview: Int, @RequestBody updateParticipant: UpdateParticipantDto) {
+    @PatchMapping("/{id}")
+    fun update(
+        @PathVariable id: String,
+        @RequestParam desiredInterview: Int,
+        @RequestBody updateParticipant: UpdateParticipantDto
+    ) {
         participantService.update(id, desiredInterview, updateParticipant)
     }
 }

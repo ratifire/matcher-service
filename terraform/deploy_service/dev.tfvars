@@ -32,7 +32,7 @@ matcher_repository_name = "matcher-service"
 
 aws_ecs_task_definition_family = "matcher-td"
 
-matcher_cluster_name = "matcherMongoDB"
+matcher_cluster_name = "matcher-cluster"
 
 matcher_container_name = "matcher-container"
 

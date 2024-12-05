@@ -1,16 +1,15 @@
 resource "mongodbatlas_cluster" "mongo_cluster" {
-  project_id                  = var.project_id
-  name                        = "matcher-cluster"
-  cluster_type                = "SHARDED"
-  provider_region_name        = "EU_NORTH_1"
+  name                    = var.matcher_cluster_name
+  cluster_type            = "SHARED"
+  provider_name           = "AWS"
+  provider_region_name    = "EU_NORTH_1"
   provider_instance_size_name = "M0"
-  provider_name               = "AWS"
-
+  project_id = var.project_id
 }
 
 resource "mongodbatlas_database_user" "db_user" {
   project_id = var.project_id
-  username   = "matcher_user"
+  username   = "matcheruser"
   password   = var.db_user_password
   roles {
     role_name     = "RoleTest"

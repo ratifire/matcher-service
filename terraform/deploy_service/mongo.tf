@@ -1,10 +1,10 @@
 resource "mongodbatlas_cluster" "mongo_cluster" {
-  name                    = var.matcher_cluster_name
-  cluster_type            = "SHARED"
-  provider_name           = "AWS"
-  provider_region_name    = "EU_NORTH_1"
+  name                        = var.matcher_cluster_name
+  cluster_type                = "SHARED"
+  provider_name               = "AWS"
+  provider_region_name        = "EU_NORTH_1"
   provider_instance_size_name = "M0"
-  project_id = var.project_id
+  project_id                  = var.project_id
 }
 
 resource "mongodbatlas_database_user" "db_user" {

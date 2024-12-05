@@ -1,15 +1,11 @@
 resource "mongodbatlas_cluster" "mongo_cluster" {
-  project_id   = var.project_id
-  name         = "matcher-cluster"
-  cluster_type = "SHARDED"
+  project_id                  = var.project_id
+  name                        = "matcher-cluster"
+  cluster_type                = "SHARDED"
+  provider_region_name        = "EU_NORTH_1"
+  provider_instance_size_name = "M0"
+  provider_name               = "AWS"
 
-  provider_settings {
-    provider_name      = "AWS"
-    instance_size_name = "M0"
-    region_name        = "eu-north-1"
-  }
-  provider_instance_size_name = ""
-  provider_name               = ""
 }
 
 resource "mongodbatlas_database_user" "db_user" {
@@ -17,8 +13,8 @@ resource "mongodbatlas_database_user" "db_user" {
   username   = "matcher_user"
   password   = var.db_user_password
   roles {
-    role_name     = "readWriteAnyDatabase"
-    database_name = "admin"
+    role_name     = "RoleTest"
+    database_name = "matcherMongoDB"
   }
   auth_database_name = "matcherMongoDB"
 }

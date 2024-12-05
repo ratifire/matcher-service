@@ -4,6 +4,7 @@ import org.ratifire.matcherservice.converter.MasteryLeveLMapper
 import org.ratifire.matcherservice.converter.ParticipantMapper
 import org.ratifire.matcherservice.dto.ParticipantDto
 import org.ratifire.matcherservice.entity.ParticipantEntity
+import org.ratifire.matcherservice.exception.ParticipantNotFoundException
 import org.ratifire.matcherservice.repository.ParticipantRepository
 import org.springframework.stereotype.Service
 
@@ -21,6 +22,13 @@ class ParticipantService(
 
     fun save(participant: ParticipantEntity): ParticipantEntity {
         return participantRepository.save(participant)
+    }
+
+    fun delete(id: String) {
+        if (!participantRepository.existsById(id)) {
+            throw ParticipantNotFoundException("Participant with id: $id not found")
+        }
+        participantRepository.deleteById(id)
     }
 
     fun isParticipantRequestExist(participant: ParticipantDto) = participantRepository.exist(

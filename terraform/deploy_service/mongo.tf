@@ -19,7 +19,7 @@ resource "mongodbatlas_database_user" "db_user" {
   auth_database_name = "matcherMongoDB"
 }
 
-resource "mongodbatlas_project_ip_whitelist" "whitelist" {
+resource "mongodbatlas_project_ip_access_list" "whitelist" {
   project_id = var.project_id
   cidr_block = "0.0.0.0/0"
 }

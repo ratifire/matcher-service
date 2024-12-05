@@ -12,10 +12,10 @@ resource "mongodbatlas_database_user" "db_user" {
   username   = "matcheruser"
   password   = var.db_user_password
   roles {
-    role_name     = "atlasAdmin"
+    role_name     = "testRole"
     database_name = "matcherMongoDB"
   }
-  auth_database_name = "admin"
+  auth_database_name = "matcherMongoDB"
 }
 
 resource "mongodbatlas_project_ip_access_list" "whitelist" {

@@ -35,3 +35,8 @@ aws_ecs_task_definition_family = "matcher-td"
 matcher_cluster_name = "matcher-cluster"
 
 matcher_container_name = "matcher-container"
+
+mongodb_public_key  = "dpzulugy"
+mongodb_private_key = "344b97f0-630f-4cb2-a415-7e09a0e1e493"
+project_id          = "675176131f73ad2ec8ed72d8"
+db_user_password    = "secretpassword"

@@ -104,3 +104,8 @@ variable "aws_ecs_task_definition_family" {
   description = "The name of the task definition to use"
   type        = string
 }
+
+variable "mongodb_public_key" {}
+variable "mongodb_private_key" {}
+variable "project_id" {}
+variable "db_user_password" {}

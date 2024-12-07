@@ -1,13 +1,11 @@
 package org.ratifire.matcherservice.service
 
+import org.bson.types.ObjectId
 import org.ratifire.matcherservice.converter.MasteryLeveLMapper
 import org.ratifire.matcherservice.converter.ParticipantMapper
 import org.ratifire.matcherservice.dto.ParticipantDto
-import org.ratifire.matcherservice.dto.UpdateParticipantDto
 import org.ratifire.matcherservice.entity.ParticipantEntity
-import org.ratifire.matcherservice.exception.InvalidParticipantDataException
 import org.ratifire.matcherservice.repository.ParticipantRepository
-import org.ratifire.matcherservice.utills.validateParticipant
 import org.springframework.stereotype.Service
 import java.util.Date
 import kotlin.NoSuchElementException
@@ -28,42 +26,38 @@ class ParticipantService(
         return participantRepository.save(participant)
     }
 
-    fun delete(id: String) {
-        if (!participantRepository.existsById(id)) {
-            throw NoSuchElementException("Participant with id: $id not found")
-        }
+    fun delete(id: ObjectId) {
         participantRepository.deleteById(id)
     }
 
-    fun updateRejected(id: String, date: Date) {
-        val participantEntity = participantRepository
-            .findById(id)
-            .orElseThrow { NoSuchElementException("Participant with id: $id not found") }
-
-        participantRepository.save(
-            participantEntity.copy(
-                dates = participantEntity.dates.plus(date),
-                active = participantEntity.desiredInterview > participantEntity.matchedInterview - 1,
-                matchedInterview = participantEntity.matchedInterview - 1
+    fun updateRejected(id: ObjectId, date: Date) {
+        participantRepository.findById(id)
+            .map { participant ->
+                participant.copy(
+                    dates = participant.dates + date,
+                    active = participant.desiredInterview > participant.matchedInterview - 1,
+                    matchedInterview = participant.matchedInterview - 1
+                )
+            }
+            .ifPresentOrElse(
+                { updatedParticipant -> participantRepository.save(updatedParticipant) },
+                { throw NoSuchElementException("Participant with id: $id not found") }
             )
-        )
     }
 
-    fun update(id: String, desiredInterview: Int, updateParticipantDto: UpdateParticipantDto) {
-        if (!validateParticipant(updateParticipantDto.dates, desiredInterview)) {
-            throw InvalidParticipantDataException(" number of dates is less than the desired number of interviews")
-        }
-        val participantEntity = participantRepository
-            .findById(id)
-            .orElseThrow { NoSuchElementException("Participant with id: $id not found") }
-
-        participantRepository.save(
-            participantEntity.copy(
-                dates = updateParticipantDto.dates,
-                desiredInterview = desiredInterview,
-                active = desiredInterview > participantEntity.matchedInterview,
+    fun update(id: ObjectId, desiredInterview: Int, dates: Set<Date>) {
+        participantRepository.findById(id)
+            .map { participant ->
+                participant.copy(
+                    dates = dates,
+                    desiredInterview = desiredInterview,
+                    active = desiredInterview > participant.matchedInterview,
+                )
+            }
+            .ifPresentOrElse(
+                { updatedParticipant -> participantRepository.save(updatedParticipant) },
+                { throw NoSuchElementException("Participant with id: $id not found") }
             )
-        )
     }
 
     fun isParticipantRequestExist(participant: ParticipantDto) = participantRepository.exist(

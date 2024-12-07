@@ -1,7 +1,7 @@
 package org.ratifire.matcherservice.controller
 
+import org.bson.types.ObjectId
 import org.ratifire.matcherservice.dto.ParticipantDto
-import org.ratifire.matcherservice.dto.UpdateParticipantDto
 import org.ratifire.matcherservice.service.ParticipantService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -27,24 +27,17 @@ class ParticipantController(
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: String) {
+    fun delete(@PathVariable id: ObjectId) {
         participantService.delete(id)
     }
 
     @PutMapping("/{id}")
-    fun rejectInterview(
-        @PathVariable id: String,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) date: Date
-    ) {
+    fun rejectInterview(@PathVariable id: ObjectId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) date: Date) {
         participantService.updateRejected(id, date)
     }
 
     @PatchMapping("/{id}")
-    fun update(
-        @PathVariable id: String,
-        @RequestParam desiredInterview: Int,
-        @RequestBody updateParticipant: UpdateParticipantDto
-    ) {
-        participantService.update(id, desiredInterview, updateParticipant)
+    fun update(@PathVariable id: ObjectId, @RequestParam desiredInterview: Int, @RequestBody dates: Set<Date>) {
+        participantService.update(id, desiredInterview, dates)
     }
 }

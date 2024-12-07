@@ -3,14 +3,13 @@ package org.ratifire.matcherservice.service
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.ratifire.matcherservice.converter.MasteryLeveLMapper
 import org.ratifire.matcherservice.converter.ParticipantMapper
 import org.ratifire.matcherservice.dto.ParticipantDto
-import org.ratifire.matcherservice.dto.UpdateParticipantDto
 import org.ratifire.matcherservice.entity.ParticipantEntity
-import org.ratifire.matcherservice.exception.InvalidParticipantDataException
 import org.ratifire.matcherservice.repository.ParticipantRepository
 import org.ratifire.matcherservice.testUtills.getParticipantDto
 import org.ratifire.matcherservice.testUtills.getParticipantEntity
@@ -23,6 +22,7 @@ class ParticipantServiceTest {
     private val participantRepository = mockk<ParticipantRepository>()
     private val participantMapper = mockk<ParticipantMapper>()
     private val participantService = ParticipantService(participantRepository, participantMapper, MasteryLeveLMapper)
+    private var participantId = ObjectId("64b7e9f4d92fbc32ef123456")
 
     @Test
     fun saveTest() {
@@ -79,32 +79,15 @@ class ParticipantServiceTest {
 
     @Test
     fun deleteParticipantSuccessTest() {
-        val participantId = "123"
-
-        every { participantRepository.existsById(participantId) } returns true
         every { participantRepository.deleteById(participantId) } returns Unit
 
         participantService.delete(participantId)
 
-        verify(exactly = 1) { participantRepository.existsById(participantId) }
         verify(exactly = 1) { participantRepository.deleteById(participantId) }
     }
 
     @Test
-    fun deleteParticipantNotFoundTest() {
-        val participantId = "123"
-
-        every { participantRepository.existsById(participantId) } returns false
-
-        assertThrows<NoSuchElementException> { participantService.delete(participantId) }
-
-        verify(exactly = 1) { participantRepository.existsById(participantId) }
-        verify(exactly = 0) { participantRepository.deleteById(participantId) }
-    }
-
-    @Test
     fun updateRejectedSuccessTest() {
-        val participantId = "123"
         val date = Date.from(Instant.parse("2024-11-01T09:00:00Z"))
 
         val existingParticipant = getParticipantEntity(emptySet())
@@ -120,7 +103,6 @@ class ParticipantServiceTest {
 
     @Test
     fun updateRejectedParticipantNotFoundTest() {
-        val participantId = "123"
         val date = Date.from(Instant.parse("2024-11-01T09:00:00Z"))
 
         every { participantRepository.findById(participantId) } returns Optional.empty()
@@ -135,49 +117,30 @@ class ParticipantServiceTest {
 
     @Test
     fun updateSuccessTest() {
-        val participantId = "123"
         val desiredInterview = 2
         val dates = arrayOf("2024-11-01T09:00:00Z", "2024-11-02T10:00:00Z")
             .map { Date.from(Instant.parse(it)) }.toSet()
-        val updateParticipantDto = UpdateParticipantDto(dates)
 
         val existingParticipant = getParticipantEntity(emptySet())
 
         every { participantRepository.findById(participantId) } returns Optional.of(existingParticipant)
         every { participantRepository.save(any()) } returns existingParticipant
 
-        participantService.update(participantId, desiredInterview, updateParticipantDto)
+        participantService.update(participantId, desiredInterview, dates)
 
         verify(exactly = 1) { participantRepository.findById(participantId) }
         verify(exactly = 1) { participantRepository.save(any()) }
     }
 
     @Test
-    fun updateInvalidDatesTest() {
-        val participantId = "123"
-        val desiredInterview = 3
-        val dates = emptySet<Date>()
-        val updateParticipantDto = UpdateParticipantDto(dates)
-
-        assertThrows<InvalidParticipantDataException> {
-            participantService.update(participantId, desiredInterview, updateParticipantDto)
-        }
-
-        verify(exactly = 0) { participantRepository.findById(any()) }
-        verify(exactly = 0) { participantRepository.save(any()) }
-    }
-
-    @Test
     fun updateParticipantNotFoundTest() {
-        val participantId = "123"
         val desiredInterview = 1
         val dates = arrayOf("2024-11-01T09:00:00Z").map { Date.from(Instant.parse(it)) }.toSet()
-        val updateParticipantDto = UpdateParticipantDto(dates)
 
         every { participantRepository.findById(participantId) } returns Optional.empty()
 
         assertThrows<NoSuchElementException> {
-            participantService.update(participantId, desiredInterview, updateParticipantDto)
+            participantService.update(participantId, desiredInterview, dates)
         }
 
         verify(exactly = 1) { participantRepository.findById(participantId) }

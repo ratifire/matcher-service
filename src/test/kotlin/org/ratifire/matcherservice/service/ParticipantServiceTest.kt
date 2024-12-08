@@ -10,7 +10,6 @@ import org.ratifire.matcherservice.converter.MasteryLeveLMapper
 import org.ratifire.matcherservice.converter.ParticipantMapper
 import org.ratifire.matcherservice.dto.ParticipantDto
 import org.ratifire.matcherservice.entity.ParticipantEntity
-import org.ratifire.matcherservice.enums.UpdateAction
 import org.ratifire.matcherservice.repository.ParticipantRepository
 import org.ratifire.matcherservice.testUtills.getParticipantDto
 import org.ratifire.matcherservice.testUtills.getParticipantEntity
@@ -89,10 +88,10 @@ class ParticipantServiceTest {
     }
 
     @Test
-    fun updateWithUpdateActionUPDATESuccess() {
+    fun updateSuccessTest() {
         val dates = arrayOf("2024-11-02T09:00:00Z").map { Date.from(Instant.parse(it)) }.toSet()
-        val existingParticipant = getParticipantEntity(dates, 2)
-        val request = getUpdateRequestDto(UpdateAction.UPDATE)
+        val existingParticipant = getParticipantEntity(dates)
+        val request = getUpdateRequestDto(3, 2)
 
         every { participantRepository.findById(participantId) } returns Optional.of(existingParticipant)
         every { participantRepository.save(any()) } answers { firstArg() }
@@ -101,42 +100,24 @@ class ParticipantServiceTest {
 
         verify {
             participantRepository.save(match { updatedParticipant ->
-                updatedParticipant.dates == existingParticipant.dates + request.dates &&
-                        updatedParticipant.desiredInterview == 2 &&
+                updatedParticipant.dates == request.dates &&
+                        updatedParticipant.desiredInterview == request.desiredInterview &&
+                        updatedParticipant.matchedInterview == request.matchedInterview &&
                         updatedParticipant.active
             })
         }
     }
 
     @Test
-    fun updateWithUpdateActionREJECTSuccess() {
-        val dates = arrayOf("2024-11-02T09:00:00Z").map { Date.from(Instant.parse(it)) }.toSet()
-        val existingParticipant = getParticipantEntity(dates, 2)
-        val request = getUpdateRequestDto(UpdateAction.REJECT)
-
-        every { participantRepository.findById(participantId) } returns Optional.of(existingParticipant)
-        every { participantRepository.save(any()) } answers { firstArg() }
-
-        participantService.update(participantId, request)
-
-        verify {
-            participantRepository.save(match { updatedParticipant ->
-                updatedParticipant.dates == existingParticipant.dates + request.dates &&
-                        updatedParticipant.matchedInterview == existingParticipant.matchedInterview - 1
-                        updatedParticipant.active
-            })
-        }
-    }
-
-    @Test
-    fun shouldThrowExceptionIfParticipantNotFound() {
-        val participantId = ObjectId()
-        val request = getUpdateRequestDto(UpdateAction.UPDATE)
+    fun updateThrowExceptionWhenParticipantNotFound() {
+        val updateRequest = getUpdateRequestDto()
 
         every { participantRepository.findById(participantId) } returns Optional.empty()
 
         assertThrows<NoSuchElementException> {
-            participantService.update(participantId, request)
+            participantService.update(participantId, updateRequest)
         }
+
+        verify(exactly = 0) { participantRepository.save(any<ParticipantEntity>()) }
     }
 }

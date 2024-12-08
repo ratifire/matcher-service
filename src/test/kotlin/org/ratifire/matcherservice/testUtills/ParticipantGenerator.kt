@@ -6,7 +6,6 @@ import org.ratifire.matcherservice.dto.UpdateRequestDto
 import org.ratifire.matcherservice.entity.ParticipantEntity
 import org.ratifire.matcherservice.enums.MasteryLevel
 import org.ratifire.matcherservice.enums.ParticipantType
-import org.ratifire.matcherservice.enums.UpdateAction
 import java.time.Instant
 import java.util.*
 
@@ -47,8 +46,8 @@ fun getParticipantDto(dates: Set<Date>, desiredInterview: Int = 3) = Participant
     blackList = setOf(91)
 )
 
-fun getUpdateRequestDto(action: UpdateAction, desiredInterview: Int = 2) = UpdateRequestDto(
-    action = action,
+fun getUpdateRequestDto(desiredInterview: Int = 2, matchedInterview: Int = 2) = UpdateRequestDto(
     dates = arrayOf("2024-11-01T09:00:00Z").map { Date.from(Instant.parse(it)) }.toSet(),
-    desiredInterview = desiredInterview
+    desiredInterview = desiredInterview,
+    matchedInterview = matchedInterview
 )

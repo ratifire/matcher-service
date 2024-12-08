@@ -3,7 +3,6 @@ package org.ratifire.matcherservice.dto
 import org.bson.types.ObjectId
 import org.ratifire.matcherservice.enums.MasteryLevel
 import org.ratifire.matcherservice.enums.ParticipantType
-import org.ratifire.matcherservice.enums.UpdateAction
 import java.util.Date
 
 data class ParticipantDto(
@@ -29,6 +28,6 @@ data class PairedParticipantDto(
 
 data class UpdateRequestDto(
     val desiredInterview: Int,
-    val dates: Set<Date>,
-    val action: UpdateAction
+    val matchedInterview: Int,
+    val dates: Set<Date>
 )

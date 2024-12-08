@@ -1,8 +1,9 @@
 package org.ratifire.matcherservice.dto
 
+import org.bson.types.ObjectId
 import org.ratifire.matcherservice.enums.MasteryLevel
 import org.ratifire.matcherservice.enums.ParticipantType
-import java.util.*
+import java.util.Date
 
 data class ParticipantDto(
     val participantId: Int,
@@ -15,4 +16,18 @@ data class ParticipantDto(
     val dates: Set<Date>,
     val averageMark: Double,
     val blackList: Set<Int>,
+)
+
+data class PairedParticipantDto(
+    val interviewerId: Int,
+    val candidateId: Int,
+    val interviewerParticipantId: ObjectId,
+    val candidateParticipantId: ObjectId,
+    val date: Date
+)
+
+data class UpdateRequestDto(
+    val desiredInterview: Int,
+    val matchedInterview: Int,
+    val dates: Set<Date>
 )

@@ -1,7 +1,8 @@
 package org.ratifire.matcherservice.repository
 
+import org.bson.types.ObjectId
 import org.ratifire.matcherservice.entity.ParticipantEntity
 import org.ratifire.matcherservice.repository.custom.CustomParticipantRepository
 import org.springframework.data.repository.CrudRepository
 
-interface ParticipantRepository : CrudRepository<ParticipantEntity, Int>, CustomParticipantRepository
+interface ParticipantRepository : CrudRepository<ParticipantEntity, ObjectId>, CustomParticipantRepository

@@ -12,8 +12,7 @@ class HandlerException {
     private val logger: Logger = Logger.getLogger(HandlerException::class.java.name)
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(RuntimeException::class)
-    fun handleNoSuchElementException(exception: RuntimeException) {
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNoSuchElementException(exception: NoSuchElementException) =
         logger.warning("Exception caught: ${exception.message}")
-    }
 }

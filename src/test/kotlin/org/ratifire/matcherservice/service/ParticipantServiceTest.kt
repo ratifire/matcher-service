@@ -6,7 +6,6 @@ import io.mockk.verify
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.ratifire.matcherservice.converter.MasteryLeveLMapper
 import org.ratifire.matcherservice.converter.ParticipantMapper
 import org.ratifire.matcherservice.dto.ParticipantDto
 import org.ratifire.matcherservice.entity.ParticipantEntity
@@ -22,7 +21,7 @@ class ParticipantServiceTest {
 
     private val participantRepository = mockk<ParticipantRepository>()
     private val participantMapper = mockk<ParticipantMapper>()
-    private val participantService = ParticipantService(participantRepository, participantMapper, MasteryLeveLMapper)
+    private val participantService = ParticipantService(participantRepository, participantMapper)
     private var participantId = ObjectId("64b7e9f4d92fbc32ef123456")
 
     @Test

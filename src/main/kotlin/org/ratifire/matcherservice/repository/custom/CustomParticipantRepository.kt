@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Query
 interface CustomParticipantRepository {
 
     fun findCandidates(participant: ParticipantEntity): List<ParticipantEntity>
-    fun exist(participantId: Int, specialization: String, mastery: Int, type: ParticipantType): Boolean
+    fun exist(participantId: Long, specialization: String, mastery: Int, type: ParticipantType): Boolean
 }
 
 class CustomParticipantRepositoryImpl(private val mongoTemplate: MongoTemplate) : CustomParticipantRepository {
@@ -51,7 +51,7 @@ class CustomParticipantRepositoryImpl(private val mongoTemplate: MongoTemplate) 
         return mongoTemplate.find(query, ParticipantEntity::class.java)
     }
 
-    override fun exist(participantId: Int, specialization: String, mastery: Int, type: ParticipantType): Boolean {
+    override fun exist(participantId: Long, specialization: String, mastery: Int, type: ParticipantType): Boolean {
         val query = Query().apply {
             addCriteria(Criteria.where("participantId").`is`(participantId))
             addCriteria(Criteria.where("specialization").`is`(specialization))

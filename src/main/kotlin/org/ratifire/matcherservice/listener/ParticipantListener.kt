@@ -18,7 +18,7 @@ class ParticipantListener(
     @SqsListener("participantQueue")
     fun handleParticipantMessage(participant: ParticipantDto) {
         logger.info("consumed participant message with id ${participant.participantId}")
-
+        println(participant)
         if (!validateParticipantMessage(participant)) {
             logger.warning(" participant message with id ${participant.participantId} is not valid")
             return

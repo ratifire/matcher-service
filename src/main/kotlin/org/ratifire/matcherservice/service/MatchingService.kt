@@ -5,6 +5,7 @@ import org.ratifire.matcherservice.entity.ParticipantEntity
 import org.ratifire.matcherservice.enums.ParticipantType
 import org.ratifire.matcherservice.repository.ParticipantRepository
 import org.ratifire.matcherservice.sender.ParticipantSender
+import org.springframework.ai.openai.OpenAiChatModel
 import org.springframework.stereotype.Service
 import java.util.Date
 import java.util.logging.Logger
@@ -13,12 +14,20 @@ import java.util.logging.Logger
 class MatchingService(
     val participantRepository: ParticipantRepository,
     val participantService: ParticipantService,
+    val openAiChatService: OpenAiService,
     val participantSender: ParticipantSender
 ) {
 
     private val logger: Logger = Logger.getLogger(MatchingService::class.java.name)
 
+
     fun findMatch(participant: ParticipantEntity): Map<ParticipantEntity, Date> {
+
+
+    openAiChatService.matchCandidateWithInterviewers(participant, participantRepository.findCandidates(participant))
+
+        println( participantRepository.findCandidates(participant))
+
         val candidates = participantRepository.findCandidates(participant)
             .sortedByDescending { participant.hardSkills.intersect(it.hardSkills).size }
 

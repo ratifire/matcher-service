@@ -17,7 +17,7 @@ fun getParticipantEntity(dates: Set<Date>, desiredInterview: Int = 3) = Particip
     matchedInterview = 0,
     specialization = "Software Engineering",
     active = true,
-    masteryLevel = 1,
+    masteryLevel = MasteryLevel.JUNIOR.level,
     hardSkills = setOf(
         "Java", "Spring", "Hibernate"
     ),
@@ -34,7 +34,7 @@ fun getParticipantDto(dates: Set<Date>, desiredInterview: Int = 3) = Participant
     type = ParticipantType.CANDIDATE,
     desiredInterview = desiredInterview,
     specialization = "Software Engineering",
-    masteryLevel = MasteryLevel.SENIOR,
+    masteryLevel = MasteryLevel.SENIOR.level,
     hardSkills = setOf(
         "Java", "Spring", "Hibernate"
     ),

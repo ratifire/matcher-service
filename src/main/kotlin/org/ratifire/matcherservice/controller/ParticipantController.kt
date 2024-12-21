@@ -29,6 +29,6 @@ class ParticipantController(
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: ObjectId, @RequestBody request: UpdateRequestDto) =
+    fun update(@PathVariable id: Long, @RequestBody request: UpdateRequestDto) =
         participantService.update(id, request)
 }

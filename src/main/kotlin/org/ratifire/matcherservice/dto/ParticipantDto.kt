@@ -6,6 +6,7 @@ import java.util.Date
 
 data class ParticipantDto(
     val participantId: Long,
+    val coreRequestId: Long,
     val desiredInterview: Int,
     val type: ParticipantType,
     val specialization: String,

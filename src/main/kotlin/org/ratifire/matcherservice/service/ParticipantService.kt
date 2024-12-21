@@ -27,16 +27,16 @@ class ParticipantService(
         participantRepository.deleteById(id)
     }
 
-    fun update(id: ObjectId, request: UpdateRequestDto) {
-        participantRepository.findById(id)
-            .map { participant ->
+    fun update(id: Long, request: UpdateRequestDto) {
+        participantRepository.findByCoreRequestId(id)
+            ?.map { participant ->
                 participant.copy(
                     dates = request.dates,
                     desiredInterview = request.desiredInterview,
                     matchedInterview = request.matchedInterview,
                     active = request.desiredInterview > request.matchedInterview
                 )
-            }.ifPresentOrElse({ updatedParticipant -> participantRepository.save(updatedParticipant) },
+            }?.ifPresentOrElse({ updatedParticipant -> participantRepository.save(updatedParticipant) },
                 { throw NoSuchElementException("Participant with id: $id not found") })
     }
 

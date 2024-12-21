@@ -10,6 +10,7 @@ import java.util.*
 data class ParticipantEntity(
     @Id val id: ObjectId? = null,
     val participantId: Long,
+    val coreRequestId: Long,
     val specialization: String,
     val type: ParticipantType,
     val masteryLevel: Int,

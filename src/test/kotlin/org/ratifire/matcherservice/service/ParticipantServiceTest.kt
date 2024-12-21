@@ -22,7 +22,7 @@ class ParticipantServiceTest {
     private val participantRepository = mockk<ParticipantRepository>()
     private val participantMapper = mockk<ParticipantMapper>()
     private val participantService = ParticipantService(participantRepository, participantMapper)
-    private var participantId = ObjectId("64b7e9f4d92fbc32ef123456")
+    private var participantId = 1L
 
     @Test
     fun saveTest() {
@@ -79,11 +79,12 @@ class ParticipantServiceTest {
 
     @Test
     fun deleteParticipantSuccessTest() {
-        every { participantRepository.deleteById(participantId) } returns Unit
+        val participantIdToDelete = ObjectId("64b7e9f4d92fbc32ef123456")
+        every { participantRepository.deleteById(participantIdToDelete) } returns Unit
 
-        participantService.delete(participantId)
+        participantService.delete(participantIdToDelete)
 
-        verify(exactly = 1) { participantRepository.deleteById(participantId) }
+        verify(exactly = 1) { participantRepository.deleteById(participantIdToDelete) }
     }
 
     @Test
@@ -92,7 +93,7 @@ class ParticipantServiceTest {
         val existingParticipant = getParticipantEntity(dates)
         val request = getUpdateRequestDto(3, 2)
 
-        every { participantRepository.findById(participantId) } returns Optional.of(existingParticipant)
+        every { participantRepository.findByCoreRequestId(participantId) } returns Optional.of(existingParticipant)
         every { participantRepository.save(any()) } answers { firstArg() }
 
         participantService.update(participantId, request)
@@ -111,7 +112,7 @@ class ParticipantServiceTest {
     fun updateThrowExceptionWhenParticipantNotFound() {
         val updateRequest = getUpdateRequestDto()
 
-        every { participantRepository.findById(participantId) } returns Optional.empty()
+        every { participantRepository.findByCoreRequestId(participantId) } returns Optional.empty()
 
         assertThrows<NoSuchElementException> {
             participantService.update(participantId, updateRequest)

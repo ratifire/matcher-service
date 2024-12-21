@@ -12,6 +12,7 @@ import java.util.*
 fun getParticipantEntity(dates: Set<Date>, desiredInterview: Int = 3) = ParticipantEntity(
     id = ObjectId("64b7e9f4d92fbc32ef123456"),
     participantId = 99,
+    coreRequestId = 1,
     type = ParticipantType.CANDIDATE,
     desiredInterview = desiredInterview,
     matchedInterview = 0,
@@ -31,6 +32,7 @@ fun getParticipantEntity(dates: Set<Date>, desiredInterview: Int = 3) = Particip
 
 fun getParticipantDto(dates: Set<Date>, desiredInterview: Int = 3) = ParticipantDto(
     participantId = 99,
+    coreRequestId = 1,
     type = ParticipantType.CANDIDATE,
     desiredInterview = desiredInterview,
     specialization = "Software Engineering",

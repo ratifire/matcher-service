@@ -17,6 +17,7 @@ class ValidatorTest {
         softSkills = emptySet(),
         blackList = emptySet(),
         participantId = 1,
+        coreRequestId = 1,
         type = ParticipantType.CANDIDATE,
         specialization = "DEV",
         masteryLevel = MasteryLevel.JUNIOR.level,

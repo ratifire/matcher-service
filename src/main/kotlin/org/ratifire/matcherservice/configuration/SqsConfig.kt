@@ -1,6 +1,7 @@
 package org.ratifire.matcherservice.configuration
 
 import io.awspring.cloud.sqs.operations.SqsTemplate
+import org.springframework.ai.chat.client.ChatClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -27,5 +28,12 @@ class SqsConfig { // need to be reconfigured for prod env
     @Bean
     fun sqsTemplate(sqsAsyncClient: SqsAsyncClient): SqsTemplate {
         return SqsTemplate.builder().sqsAsyncClient(sqsAsyncClient).build()
+    }
+
+
+    @Bean
+    fun chatClient(builder: ChatClient.Builder): ChatClient {
+        return builder.defaultSystem("You are a friendly chat bot that answers question")
+            .build()
     }
 }

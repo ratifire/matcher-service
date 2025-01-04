@@ -25,35 +25,56 @@ class OpenAiService(private val chatModel: OpenAiChatModel) {
     }
 
     private fun buildMessages(candidate: ParticipantEntity, interviewers: List<ParticipantEntity>): Prompt {
-
-        val head = PromptTemplate(
+        val headTemplate = PromptTemplate(
             """
-                You are an AI that compares a candidate's hard and soft skills with multiple interviewers.
-                Consider approximate matches (e.g., "Java Core" ≈ "Java Basic").
-                Return a JSON array where each element is:
-                {
-                  "interviewerId": <int>,
-                  "matchedPercentage": <numeric>
-                }
-            """.trimIndent()
-        ).createMessage()
+    You are an AI that compares a candidate's hard and soft skills with multiple interviewers.
+    Consider approximate matches (e.g., "Java Core" ≈ "Java Basic"). Language Ukrainian 
+    Return a JSON array where each element is:
+    {{
+      "interviewerId": "int",
+      "matchedPercentage": "numeric",
+      "description": "String"
+    }}
+    """.trimIndent()
+        )
+        val head = headTemplate.createMessage()
 
-        val candidateInfo = PromptTemplate("""
-            Candidate (ID: ${candidate.participantId}):
-            Hard Skills: ${candidate.hardSkills.joinToString(", ")}
-            Soft Skills: ${candidate.softSkills.joinToString(", ")}
-        """.trimIndent()).createMessage()
-
-        val interviewersInfo = PromptTemplate(interviewers.joinToString("\n") { interviewer ->
+// Candidate information template
+        val candidateTemplate = PromptTemplate(
             """
-            Interviewer (ID: ${interviewer.participantId}):
-            Hard Skills: ${interviewer.hardSkills.joinToString(", ")}
-            Soft Skills: ${interviewer.softSkills.joinToString(", ")}
-            """.trimIndent()
+    Candidate (ID: {candidateId}):
+    Hard Skills: {hardSkills}
+    Soft Skills: {softSkills}
+    """.trimIndent()
+        )
+        val candidateInfo = candidateTemplate.createMessage(
+            mapOf(
+                "candidateId" to candidate.participantId,
+                "hardSkills" to candidate.hardSkills.joinToString(", "),
+                "softSkills" to candidate.softSkills.joinToString(", ")
+            )
+        )
 
-        }).createMessage()
+// Preprocess interviewers information outside the template
+        val interviewersString = interviewers.joinToString("\n") { interviewer ->
+            """
+    Interviewer (ID: ${interviewer.participantId}):
+    Hard Skills: ${interviewer.hardSkills.joinToString(", ")}
+    Soft Skills: ${interviewer.softSkills.joinToString(", ")}
+    """.trimIndent()
+        }
 
+// Interviewers template
+        val interviewersTemplate = PromptTemplate(
+            """
+    {interviewersInfo}
+    """.trimIndent()
+        )
+        val interviewersInfo = interviewersTemplate.createMessage(
+            mapOf("interviewersInfo" to interviewersString)
+        )
+
+// Combine all messages into a single prompt
         return Prompt(listOf(head, candidateInfo, interviewersInfo))
-
     }
 }

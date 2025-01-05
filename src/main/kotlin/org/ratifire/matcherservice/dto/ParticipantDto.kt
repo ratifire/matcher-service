@@ -5,6 +5,7 @@ import org.ratifire.matcherservice.enums.ParticipantType
 import java.util.Date
 
 data class ParticipantDto(
+    val id: Int,
     val participantId: Long,
     val desiredInterview: Int,
     val type: ParticipantType,
@@ -20,8 +21,8 @@ data class ParticipantDto(
 data class PairedParticipantDto(
     val interviewerId: Long,
     val candidateId: Long,
-    val interviewerParticipantId: ObjectId,
-    val candidateParticipantId: ObjectId,
+    val interviewerParticipantId: Int,
+    val candidateParticipantId: Int,
     val date: Date
 )
 

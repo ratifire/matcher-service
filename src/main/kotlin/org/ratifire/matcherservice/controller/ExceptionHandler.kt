@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import java.util.logging.Logger
 
 @RestControllerAdvice
-class HandlerException {
+class ExceptionHandler {
 
-    private val logger: Logger = Logger.getLogger(HandlerException::class.java.name)
+    private val logger: Logger = Logger.getLogger(ExceptionHandler::class.java.name)
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException::class)

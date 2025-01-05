@@ -1,10 +1,13 @@
 package org.ratifire.matcherservice.listener
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.awspring.cloud.sqs.annotation.SqsListener
 import org.ratifire.matcherservice.dto.ParticipantDto
+import org.ratifire.matcherservice.enums.SqsMessageType
 import org.ratifire.matcherservice.service.MatchingService
 import org.ratifire.matcherservice.service.ParticipantService
-import org.ratifire.matcherservice.utills.validateParticipant
+import org.springframework.messaging.handler.annotation.Header
 import org.springframework.stereotype.Component
 import java.util.logging.Logger
 
@@ -16,18 +19,16 @@ class ParticipantListener(
     private val logger: Logger = Logger.getLogger(ParticipantListener::class.java.name)
 
     @SqsListener("participantQueue")
-    fun handleParticipantMessage(participant: ParticipantDto) {
-        logger.info("consumed participant message with id ${participant.participantId}")
+    fun participantRouter(@Header("messageType") type: SqsMessageType, payload: String) {
+        logger.info("consumed participant event $type")
+        val objectMapper = jacksonObjectMapper()
 
-        if (!validateParticipantMessage(participant)) {
-            logger.warning(" participant message with id ${participant.participantId} is not valid")
-            return
-        } // todo  add some logic to hand invalid massage
-
-        val participantEntity = participantService.save(participant)
-        matchingService.matchParticipant(participantEntity)
+        when (type) {
+            SqsMessageType.UPDATE -> participantService.update(jacksonObjectMapper().readValue(payload))
+            SqsMessageType.DELETE -> participantService.delete(objectMapper.readTree(payload)["id"].asInt())
+            SqsMessageType.CREATE -> participantService.save(
+                jacksonObjectMapper().readValue(payload, ParticipantDto::class.java)
+            ).let { matchingService.matchParticipant(it) }
+        }
     }
-
-    private fun validateParticipantMessage(participant: ParticipantDto) =
-        validateParticipant(participant) && !participantService.isParticipantRequestExist(participant)
 }

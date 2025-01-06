@@ -10,7 +10,7 @@ import java.time.Instant
 import java.util.*
 
 fun getParticipantEntity(dates: Set<Date>, desiredInterview: Int = 3) = ParticipantEntity(
-    id = ObjectId("64b7e9f4d92fbc32ef123456"),
+    id = 1,
     participantId = 99,
     type = ParticipantType.CANDIDATE,
     desiredInterview = desiredInterview,
@@ -30,6 +30,7 @@ fun getParticipantEntity(dates: Set<Date>, desiredInterview: Int = 3) = Particip
 )
 
 fun getParticipantDto(dates: Set<Date>, desiredInterview: Int = 3) = ParticipantDto(
+    id = 1,
     participantId = 99,
     type = ParticipantType.CANDIDATE,
     desiredInterview = desiredInterview,

@@ -17,7 +17,7 @@ class ParticipantService(
 ) {
 
     fun save(participant: ParticipantDto): ParticipantEntity {
-        if (validateParticipant(participant) && !isParticipantRequestExist(participant)) {
+        if (validateParticipant(participant) && isParticipantRequestExist(participant)) {
             throw ParticipantException("participant object is already registered or have incorrect state")
         }
 

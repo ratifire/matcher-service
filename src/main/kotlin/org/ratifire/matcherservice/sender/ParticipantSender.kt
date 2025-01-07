@@ -1,5 +1,6 @@
 package org.ratifire.matcherservice.sender
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import org.ratifire.matcherservice.dto.PairedParticipantDto
 import org.springframework.stereotype.Component
@@ -10,6 +11,7 @@ class ParticipantSender(
 ) {
 
     fun sendMatchedInterviewParticipants(pairedParticipantDto: PairedParticipantDto) {
-        rabbitmqTemplate.send("matched-participant", pairedParticipantDto)
+        val payload: String = jacksonObjectMapper().writeValueAsString(pairedParticipantDto)
+        rabbitmqTemplate.send("matched-participant", payload)
     }
 }

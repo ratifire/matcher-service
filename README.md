@@ -1,106 +1,79 @@
-# Getting Started
+# 📘 Project Setup Guide
 
-### Reference Documentation
+## 🚀 Quick Start with Docker Compose
 
-For further reference, please consider the following sections:
+Manage services using `docker-compose` commands:
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/3.3.5/gradle-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/3.3.5/gradle-plugin/packaging-oci-image.html)
-* [Spring Web](https://docs.spring.io/spring-boot/3.3.5/reference/web/servlet.html)
-
-### Guides
-
-The following guides illustrate how to use some features concretely:
-
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
-
-### Additional Links
-
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
-# How to Use Docker Compose
-
-To manage Docker Compose services, use the following commands in the directory containing the `docker-compose.yml` file:
-
-- To **start the services**, run:
+- **Start services**:
   ```bash
   docker-compose up -d
   ```
-  This starts all services in detached mode.
-
-- To **stop and remove the services**, run:
+- **Stop and remove services**:
   ```bash
   docker-compose down
   ```
-  This stops the running containers and removes them.
-
-- To **restart the services**, run:
+- **Restart services**:
   ```bash
   docker-compose restart
   ```
-  This stops and immediately restarts the services without removing the containers.
-# How to Send a Message to ElasticMQ using Postman
-
-ElasticMQ is a lightweight message queue system that supports the Amazon SQS API. Here's how you can send a message to an ElasticMQ queue using Postman:
 
 ---
 
-## Prerequisites
-1. ElasticMQ must be running locally or on a specified endpoint.
+## 📤 Sending Messages to ElasticMQ with Postman
+
+### Prerequisites
+- ElasticMQ running at `http://localhost:9324`.
+
+### Steps to Send a Message
+1. **Open Postman** and create a new **POST** request.
+2. **Set URL** to:
+   ```
+   http://localhost:9324/queue/YourQueueName
+   ```
+3. **Add Header**:
+  - `Content-Type: application/x-www-form-urlencoded`
+4. **Set Body Parameters** (as `x-www-form-urlencoded`):
+  - `Action=SendMessage`
+  - `MessageBody=Your Message`
+
+5. **Click Send** to send your message.
 
 ---
 
-## Steps to Send a Message
-
-### 1. Open Postman
-Ensure Postman is installed on your machine. If not, download it from [Postman](https://www.postman.com/).
-
-### 2. Create a New Request
-1. Click on **New** > **Request**.
-2. Choose **POST** as the HTTP method.
-
-### 3. Set the Request URL
-Enter the following URL:
-```
-http://localhost:9324/queue/YourQueueName
-```
-Replace `YourQueueName` with the name of your queue.
-
-### 4. Configure Headers
-Add the following header to your request:
-- **Key**: `Content-Type`
-- **Value**: `application/x-www-form-urlencoded`
-
-### 5. Add Body Parameters
-In the **Body** tab, select **x-www-form-urlencoded** and add the following parameters:
-- **Action**: `SendMessage`
-- **MessageBody**: The content of your message (e.g., `Hello ElasticMQ!`).
-
-Example parameters:
-```
-Action=SendMessage
-MessageBody=Hello ElasticMQ!
-```
-
-### 6. Send the Request
-Click **Send** to send the message to ElasticMQ.
-
----
-
-## Verifying the Message
-1. Open the ElasticMQ UI (if available) or connect via a CLI tool to view the messages in the queue.
-2. Confirm that your message (`Hello ElasticMQ!`) has been successfully sent.
-
----
-
-## Example Curl Command (Optional)
-If you prefer, you can also send a message via `curl`:
+## 📋 Example `curl` Command
 ```bash
-curl -X POST   -H "Content-Type: application/x-www-form-urlencoded"   -d "Action=SendMessage&MessageBody=Hello ElasticMQ!"   http://localhost:9324/queue/YourQueueName
+curl -X POST \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "Action=SendMessage&MessageBody=Hello ElasticMQ!" \
+  http://localhost:9324/queue/YourQueueName
 ```
-Replace `YourQueueName` with the name of your queue.
+
+---
+
+# 🧰 Skillzy Toolbox (HTML Interface)
+
+A simple web-based tool for interacting with a local SQS-compatible queue.
+
+### How to Use:
+1. Open the **HTML file** in a browser.(http://localhost:8080/queue_sender.html)
+2. Enter **Queue Name** (default: `participantQueue`).
+3. Enter **Message Body** (e.g., `{"id":123,"text":"Hello"}`).
+4. Select **Message Type** (`DELETE`, `UPDATE`, `CREATE`).
+5. Click **Send Message** or **Purge Queue**.
+
+---
+
+## ✅ Requirements
+- **SQS-compatible server** at `http://localhost:9324` (e.g., **ElasticMQ**).
+- A modern **web browser**.
+
+---
+
+## 📝 Example JSON Message
+```json
+{
+  "id": 123,
+  "text": "Hello World!"
+}
+```
+

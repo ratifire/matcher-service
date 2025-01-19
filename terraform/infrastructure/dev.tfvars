@@ -1,4 +1,4 @@
-s3_bucket_name = "matcher-bucket-dev"
+s3_bucket_name = "skillzzy-matcher-terraform-dev"
 
 region = "eu-north-1"
 

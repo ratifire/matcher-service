@@ -1,5 +1,8 @@
 package org.ratifire.matcherservice.sender
 
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import org.ratifire.matcherservice.dto.PairedParticipantDto
 import org.springframework.stereotype.Component
@@ -10,6 +13,11 @@ class ParticipantSender(
 ) {
 
     fun sendMatchedInterviewParticipants(pairedParticipantDto: PairedParticipantDto) {
-        rabbitmqTemplate.send("matched-participant", pairedParticipantDto)
+        val objectMapper = jacksonObjectMapper().apply {
+            registerModule(JavaTimeModule())
+            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        }
+        val payload: String = objectMapper.writeValueAsString(pairedParticipantDto)
+        rabbitmqTemplate.send("matched-participant", payload)
     }
 }

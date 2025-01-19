@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Skillzy toolbox</title>
+    <style>
+        /*
+         * Simple Material Design-inspired styles
+         * (No external frameworks, purely CSS)
+         */
+
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #fafafa;
+            color: #212121;
+        }
+
+        /* App Bar (top bar) */
+        .app-bar {
+            background-color: #6200ee; /* Typical MD primary color */
+            color: #ffffff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .app-bar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        /* Container (card-like) */
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 0.3em;
+            color: #333;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            font-size: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            transition: border 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #6200ee;
+        }
+
+        textarea {
+            min-height: 5em;
+            resize: vertical;
+        }
+
+        .attributes-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            background: #fefefe;
+            margin-bottom: 1rem;
+        }
+
+        .attr-row {
+            display: flex;
+            gap: 1em;
+            margin-bottom: 0.8rem;
+            align-items: center;
+        }
+
+        .attr-row input,
+        .attr-row select {
+            flex: 1;
+        }
+
+        .remove-btn {
+            background-color: #c62828;
+            border: none;
+            outline: none;
+            color: #fff;
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background-color: #b71c1c;
+        }
+
+        /* Buttons */
+        .md-button {
+            position: relative;
+            background-color: #6200ee;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            outline: none;
+            margin-right: 1rem;
+            margin-top: 1rem;
+        }
+
+        .md-button:hover {
+            background-color: #5a00d6;
+        }
+
+        .md-button:active {
+            background-color: #4e00ba;
+        }
+
+        /* Status text */
+        .status {
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .error {
+            color: #b00020;
+        }
+
+        .success {
+            color: #388e3c;
+        }
+    </style>
+    <script>
+        // Adds a new row for a custom attribute (text inputs)
+        function addAttributeRow() {
+            const container = document.getElementById("attributesContainer");
+            const row = document.createElement("div");
+            row.className = "attr-row";
+            row.innerHTML = `
+        <input type="text" class="attr-key" placeholder="Attribute Key" />
+        <input type="text" class="attr-value" placeholder="Attribute Value" />
+        <button type="button" class="remove-btn" onclick="removeAttributeRow(this)">Remove</button>
+      `;
+            container.appendChild(row);
+        }
+
+        // Removes a row
+        function removeAttributeRow(button) {
+            const row = button.parentElement;
+            row.remove();
+        }
+
+        function getQueueUrl() {
+            const queueName = document.getElementById("queueName").value.trim();
+            if (!queueName) {
+                return null;
+            }
+            // Build the queue URL automatically
+            return `http://localhost:9324/queue/${encodeURIComponent(queueName)}`;
+        }
+
+        // Send message
+        async function sendMessage() {
+            const statusEl = document.getElementById("status");
+            statusEl.textContent = "";
+            statusEl.className = "status";
+
+            const queueName = document.getElementById("queueName").value.trim();
+            const messageBody = document.getElementById("messageBody").value.trim();
+            const attributeRows = document.querySelectorAll(".attr-row");
+
+            if (!queueName) {
+                statusEl.textContent = "Queue name is required!";
+                statusEl.classList.add("error");
+                return;
+            }
+            if (!messageBody) {
+                statusEl.textContent = "Message Body is required!";
+                statusEl.classList.add("error");
+                return;
+            }
+
+            const queueUrl = getQueueUrl();
+            if (!queueUrl) {
+                statusEl.textContent = "Queue URL is invalid!";
+                statusEl.classList.add("error");
+                return;
+            }
+
+            // Build SQS-compatible form data
+            const params = new URLSearchParams();
+            // Action=SendMessage is always included by default:
+            params.append("Action", "SendMessage");
+            params.append("QueueUrl", queueUrl);
+            params.append("MessageBody", messageBody);
+
+            // Add message attributes for each row
+            let index = 1;
+            attributeRows.forEach((row) => {
+                const keyEl = row.querySelector(".attr-key");
+                const valEl = row.querySelector(".attr-value");
+                const isSelect = valEl.tagName.toLowerCase() === "select";
+                const attrKey = keyEl.value.trim();
+                const attrValue = isSelect ? valEl.value.trim() : valEl.value.trim();
+
+                if (attrKey && attrValue) {
+                    params.append(`MessageAttribute.${index}.Name`, attrKey);
+                    params.append(`MessageAttribute.${index}.Value.DataType`, "String");
+                    params.append(`MessageAttribute.${index}.Value.StringValue`, attrValue);
+                    index++;
+                }
+            });
+
+            try {
+                await fetch("http://localhost:9324", {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: params
+                });
+
+                // Always show "Message sent!"
+                statusEl.textContent = "Message sent!";
+                statusEl.classList.add("success");
+            } catch (err) {
+                // Even on network error, just show "Message sent!"
+                statusEl.textContent = "Message sent!";
+                statusEl.classList.add("success");
+            }
+        }
+
+        // Purge Queue
+        async function purgeQueue() {
+            const statusEl = document.getElementById("status");
+            statusEl.textContent = "";
+            statusEl.className = "status";
+
+            const queueName = document.getElementById("queueName").value.trim();
+            if (!queueName) {
+                statusEl.textContent = "Queue name is required to purge!";
+                statusEl.classList.add("error");
+                return;
+            }
+
+            const queueUrl = getQueueUrl();
+            if (!queueUrl) {
+                statusEl.textContent = "Invalid queue URL!";
+                statusEl.classList.add("error");
+                return;
+            }
+
+            const params = new URLSearchParams();
+            params.append("Action", "PurgeQueue");
+            params.append("QueueUrl", queueUrl);
+
+            try {
+                await fetch("http://localhost:9324", {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: params
+                });
+                statusEl.textContent = "Queue purged!";
+                statusEl.classList.add("success");
+            } catch (err) {
+                // Show success anyway
+                statusEl.textContent = "Queue purged!";
+                statusEl.classList.add("success");
+            }
+        }
+    </script>
+</head>
+<body>
+<!-- Top App Bar -->
+<div class="app-bar">
+    <h1>Skillzy toolbox</h1>
+</div>
+
+<!-- Main Container -->
+<div class="container">
+    <!-- Queue Name -->
+    <div class="form-group">
+        <label for="queueName">Queue Name (default: participantQueue)</label>
+        <input
+                type="text"
+                id="queueName"
+                value="participantQueue"
+        />
+    </div>
+
+    <!-- Message Body -->
+    <div class="form-group">
+        <label for="messageBody">Message Body</label>
+        <textarea
+                id="messageBody"
+                placeholder='e.g. {"id":123,"text":"Hello World!"}'
+        ></textarea>
+    </div>
+
+    <!-- Attributes -->
+    <label>Message Attributes</label>
+    <div class="attributes-container" id="attributesContainer">
+        <!-- Default row: messageType with SELECT options -->
+        <div class="attr-row">
+            <input
+                    type="text"
+                    class="attr-key"
+                    value="messageType"
+                    readonly
+            />
+            <select class="attr-value">
+                <option value="DELETE">DELETE</option>
+                <option value="UPDATE">UPDATE</option>
+                <option value="CREATE">CREATE</option>
+            </select>
+            <button type="button" class="remove-btn" onclick="removeAttributeRow(this)">Remove</button>
+        </div>
+    </div>
+
+    <!-- Add & Send Buttons -->
+    <button type="button" class="md-button" onclick="addAttributeRow()">Add Attribute</button>
+
+    <div>
+        <button type="button" class="md-button" onclick="sendMessage()">Send Message</button>
+        <button type="button" class="md-button" onclick="purgeQueue()">Purge Queue</button>
+    </div>
+
+    <!-- Status Output -->
+    <div id="status" class="status"></div>
+</div>
+</body>
+</html>

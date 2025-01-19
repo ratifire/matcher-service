@@ -8,8 +8,8 @@ import java.util.*
 
 @Document("Participant")
 data class ParticipantEntity(
-    @Id val id: ObjectId? = null,
-    val participantId: Int,
+    @Id val id: Int,
+    val participantId: Long,
     val specialization: String,
     val type: ParticipantType,
     val masteryLevel: Int,

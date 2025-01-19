@@ -19,7 +19,7 @@ class ValidatorTest {
         participantId = 1,
         type = ParticipantType.CANDIDATE,
         specialization = "DEV",
-        masteryLevel = MasteryLevel.JUNIOR,
+        masteryLevel = MasteryLevel.JUNIOR.level,
         averageMark = 3.2,
     )
 

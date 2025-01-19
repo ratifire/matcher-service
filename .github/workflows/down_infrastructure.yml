@@ -54,15 +54,15 @@ jobs:
 
     - name: Select .tfvars file based on environment
       run: |
-        echo "Selecting .tfvars file for environment: dev"
-        if [[ ! -f "/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/dev.tfvars" ]]; then
-          echo "Error: File dev.tfvars does not exist in /home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}."
+        echo "Selecting .tfvars file for environment: ${{ github.event.inputs.environment }}"
+        if [[ ! -f "/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.tfvars" ]]; then
+          echo "Error: File ${{ github.event.inputs.environment }}.tfvars does not exist in /home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}."
           exit 1
         fi
 
     - name: Terraform Init
       run: |
-        terraform init -backend-config="/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/dev.backend" -reconfigure
+        terraform init -backend-config="/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.backend" -reconfigure
 
     - name: Terraform Format
       run: terraform fmt -check

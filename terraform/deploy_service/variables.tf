@@ -1,11 +1,11 @@
 variable "matcher_cluster_name" {
   description = "Back cluster name."
-  default     = "backend-cluster"
+  default     = "matcher-cluster"
 }
 
 variable "matcher_container_name" {
   description = "Back container name."
-  default     = "back-container"
+  default     = "matcher-container"
 }
 
 variable "matcher_repository_name" {
@@ -47,7 +47,7 @@ variable "vpc" {
 }
 
 variable "target_group_name" {
-  default = "http-ecs-back-tg"
+  default = "http-ecs-matcher-tg"
 }
 
 variable "security_group_name" {
@@ -104,3 +104,8 @@ variable "aws_ecs_task_definition_family" {
   description = "The name of the task definition to use"
   type        = string
 }
+
+variable "mongodb_public_key" {}
+variable "mongodb_private_key" {}
+variable "project_id" {}
+variable "db_user_password" {}

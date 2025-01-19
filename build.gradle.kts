@@ -11,7 +11,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -33,6 +33,7 @@ dependencies {
     testImplementation ("io.mockk:mockk:1.12.0")
     implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.1")
     implementation("software.amazon.awssdk:sqs:2.29.23")
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.2.1")
 
 
 }

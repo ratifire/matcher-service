@@ -2,15 +2,15 @@ name: Down_infrastructure
 
 on:
   workflow_dispatch:
-#    inputs:
-#      environment:
-#        description: 'Select environment to deploy (prod, dev)'
-#        required: true
-#        default: 'dev'
-#        type: choice
-#        options:
-#          - dev
-#          - prod
+    inputs:
+      environment:
+        description: 'Select environment to deploy (prod, dev)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
 
 permissions:
   id-token: write
@@ -20,7 +20,7 @@ jobs:
   terraform:
     name: Terraform destroy infrastructure
     runs-on: ubuntu-latest
-#    environment: ${{ github.event.inputs.environment || 'dev' }}
+    environment: ${{ github.event.inputs.environment || 'dev' }}
     env:
       working-directory: terraform/infrastructure
     defaults:
@@ -45,7 +45,7 @@ jobs:
     - name: Select matcher configuration
       run: |
         echo "Selecting backend configuration for environment: dev"
-        BACKEND_FILE="/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/dev.backend"
+        BACKEND_FILE="/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.backend"
         if [[ ! -f "$BACKEND_FILE" ]]; then
           echo "Error: Backend file $BACKEND_FILE does not exist."
           exit 1

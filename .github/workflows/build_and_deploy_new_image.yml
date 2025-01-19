@@ -5,15 +5,15 @@ name: Build_and_Deploy_new_Image
 
 on:
   workflow_dispatch:
-#    inputs:
-#      environment:
-#        description: 'Select environment to deploy (prod, dev)'
-#        required: true
-#        default: 'dev'
-#        type: choice
-#        options:
-#          - dev
-#          - prod
+    inputs:
+      environment:
+        description: 'Select environment to deploy (prod, dev)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
   push:
     branches:
       - main
@@ -25,7 +25,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-#    environment: ${{ github.event.inputs.environment || 'dev' }}
+    environment: ${{ github.event.inputs.environment || 'dev' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -91,6 +91,10 @@ jobs:
           --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
           --query 'taskDefinition' \
           --output json > ${{ vars.ECS_TASK_DEFINITION }}.json
+
+      - name: Clean Task Definition File
+        run: |
+          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-def.json > clean-task-def.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def

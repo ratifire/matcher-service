@@ -15,7 +15,7 @@ variable "instance_type" {
 
 variable "repository_name" {
   description = "Repository name"
-  type = string
+  type        = string
 }
 
 variable "list_of_ports" {

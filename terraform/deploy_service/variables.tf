@@ -104,3 +104,7 @@ variable "aws_ecs_task_definition_family" {
   description = "The name of the task definition to use"
   type        = string
 }
+
+variable "deploy_profile" {
+  default = "dev"
+}

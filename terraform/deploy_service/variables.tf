@@ -108,3 +108,11 @@ variable "aws_ecs_task_definition_family" {
 variable "deploy_profile" {
   default = "dev"
 }
+
+variable "matched_participant_name" {
+  default = string
+}
+
+variable "participant_queue_name" {
+  default = string
+}

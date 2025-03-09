@@ -39,3 +39,7 @@ matcher_cluster_name = "matcher-cluster-prod"
 matcher_container_name = "matcher-container-prod"
 
 target_group_name = "http-ecs-back-tg-prod"
+
+matched_participant_name = "matchedParticipantProd"
+
+participant_queue_name = "participantQueueProd"

@@ -1,5 +1,12 @@
-resource "aws_sqs_queue" "matcher_queue" {
-  name                       = "matcher-queue-${var.deploy_profile}"
+resource "aws_sqs_queue" "matcher_participant" {
+  name                       = var.matched_participant_name
+  visibility_timeout_seconds = 30
+  delay_seconds              = 0
+  message_retention_seconds  = 86400
+}
+
+resource "aws_sqs_queue" "participant_queue" {
+  name                       = var.participant_queue_name
   visibility_timeout_seconds = 30
   delay_seconds              = 0
   message_retention_seconds  = 86400

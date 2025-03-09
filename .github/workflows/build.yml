@@ -2,7 +2,7 @@ name: Build
 
 env:
   IMAGE_TAG: ${{ github.sha }}
-
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
 on:
   workflow_dispatch:
     inputs:

@@ -33,3 +33,7 @@ matcher_repository_name = "matcher-repository-prod"
 aws_ecs_task_definition_family = "matcher-td-prod"
 
 deploy_profile = "prod"
+
+matcher_cluster_name = "matcher-cluster-prod"
+
+matcher_container_name = "matcher-container-prod"

@@ -31,3 +31,5 @@ aws_lb_name = "ecs-matcher-alb-prod"
 matcher_repository_name = "matcher-repository-prod"
 
 aws_ecs_task_definition_family = "matcher-td-prod"
+
+deploy_profile = "prod"

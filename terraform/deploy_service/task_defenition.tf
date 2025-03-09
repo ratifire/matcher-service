@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       environment = [
         {
           name  = "ACTIVE_PROFILE",
-          value = "dev"
+          value = var.deploy_profile
         }
       ],
       mountPoints = [],

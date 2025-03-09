@@ -110,9 +110,9 @@ variable "deploy_profile" {
 }
 
 variable "matched_participant_name" {
-  default = string
+  type        = string
 }
 
 variable "participant_queue_name" {
-  default = string
+  type        = string
 }

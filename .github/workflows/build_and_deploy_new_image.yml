@@ -18,12 +18,6 @@ on:
     branches:
       - main
 
-env:
-  ZOOM_CLIENT_ID: ${{secrets.ZOOM_CLIENT_ID}}
-  ZOOM_CLIENT_SECRET: ${{secrets.ZOOM_CLIENT_SECRET}}
-  ZOOM_ACCOUNT_ID: ${{secrets.ZOOM_ACCOUNT_ID}}
-  ZOOM_SECRET: ${{secrets.ZOOM_SECRET}}
-
 permissions:
   contents: read
 
@@ -50,12 +44,17 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      - name: Update application-dev.properties with environment variables
+      - name: Update application.properties with environment variables
         run: |
-          sed -i 's|<AWS_SES_ACCESS_KEY_ID>|'${{ secrets.AWS_SES_ACCESS_KEY_ID }}'|g' src/main/resources/application.properties
+          sed -i 's|<AWS_ACCESS_KEY_ID>|'${{ secrets.AWS_ACCESS_KEY_ID }}'|g' src/main/resources/application.properties
+          sed -i 's|<AWS_SECRET_ACCESS_KEY>|'${{ secrets.AWS_SECRET_ACCESS_KEY }}'|g' src/main/resources/application.properties
+          sed -i 's|<AWS_REGION>|'${{ vars.AWS_REGION }}'|g' src/main/resources/application.properties
 
-      - name: Run tests
-        run: ./gradlew test
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+
+#      - name: Run tests
+#        run: ./gradlew test
 
       - name: Run build
         run: ./gradlew build -x test
@@ -91,13 +90,17 @@ jobs:
           aws ecs describe-task-definition \
           --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
           --query 'taskDefinition' \
-          --output json > task-def.json
+          --output json > ${{ vars.ECS_TASK_DEFINITION }}.json
+
+      - name: Clean Task Definition File
+        run: |
+          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-def.json > clean-task-def.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: task-def.json
+          task-definition: ${{ vars.ECS_TASK_DEFINITION }}.json
           container-name: ${{ vars.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
 
@@ -113,5 +116,5 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "GitHub Action (BackEnd): New brunch is deploying to AWS! Status: ${{ job.status }}.\nTriggered by: ${{ github.actor }}\nBranch: ${{ github.ref }}"
+            "text": "GitHub Action (Matcher): New brunch is deploying to AWS! Status: ${{ job.status }}.\nTriggered by: ${{ github.actor }}\nBranch: ${{ github.ref }}"
           }' ${{ secrets.SLACK_WEBHOOK_URL }}

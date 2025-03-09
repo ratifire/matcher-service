@@ -1,8 +1,8 @@
 name: Main_init
 
 on:
-  # schedule:
-  #   - cron: '00 05 * * *'
+#  schedule:
+#    - cron: '00 05 * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -13,7 +13,6 @@ on:
         options:
           - dev
           - prod
-
 jobs:
   deploy:
     runs-on: ubuntu-latest

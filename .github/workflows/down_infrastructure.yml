@@ -42,9 +42,9 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Select backend configuration
+    - name: Select matcher configuration
       run: |
-        echo "Selecting backend configuration for environment: ${{ github.event.inputs.environment }}"
+        echo "Selecting backend configuration for environment: dev"
         BACKEND_FILE="/home/runner/work/matcher-service/matcher-service/${{ env.working-directory }}/${{ github.event.inputs.environment }}.backend"
         if [[ ! -f "$BACKEND_FILE" ]]; then
           echo "Error: Backend file $BACKEND_FILE does not exist."

@@ -28,7 +28,7 @@ aws_ecs_service_name = "matcher-service"
 
 aws_lb_name = "ecs-matcher-alb"
 
-matcher_repository_name = "matcher-service"
+matcher_repository_name = "matcher-repository"
 
 aws_ecs_task_definition_family = "matcher-td"
 

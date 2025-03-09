@@ -47,7 +47,7 @@ variable "vpc" {
 }
 
 variable "target_group_name" {
-  default = "http-ecs-matcher-tg"
+  default = "http-ecs-back-tg"
 }
 
 variable "security_group_name" {
@@ -103,14 +103,4 @@ variable "aws_lb_name" {
 variable "aws_ecs_task_definition_family" {
   description = "The name of the task definition to use"
   type        = string
-}
-
-variable "mongodb_public_key" {}
-variable "mongodb_private_key" {}
-variable "project_id" {}
-variable "db_user_password" {}
-
-
-variable "deploy_profile" {
-  default = "dev"
 }

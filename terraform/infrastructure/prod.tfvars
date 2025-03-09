@@ -8,7 +8,7 @@ aws_ami_value_name = "amzn2-ami-ecs-kernel-5.10-hvm-2.0.20240712-x86_64-ebs"
 
 aws_key_pair_name = "terraform_ec2_matcher_key_pair_prod"
 
-repository_name = "matcher-repository-prod'"
+repository_name = "matcher-repository-prod"
 
 aws_iam_ex_role_name = "ecs-ex-role-matcher-prod"
 

@@ -37,3 +37,5 @@ deploy_profile = "prod"
 matcher_cluster_name = "matcher-cluster-prod"
 
 matcher_container_name = "matcher-container-prod"
+
+target_group_name = "http-ecs-back-tg-prod"

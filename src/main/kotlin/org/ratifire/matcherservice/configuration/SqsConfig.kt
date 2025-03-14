@@ -8,6 +8,8 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import io.awspring.cloud.sqs.operations.SqsTemplate
+import org.springframework.context.annotation.Profile
+import java.net.URI
 
 @Configuration
 class SqsConfig {
@@ -22,6 +24,7 @@ class SqsConfig {
     private lateinit var region: String
 
     @Bean
+    @Profile("!local")
     fun sqsAsyncClient(): SqsAsyncClient {
         return SqsAsyncClient.builder()
             .region(Region.of(region))
@@ -31,6 +34,16 @@ class SqsConfig {
                 )
             )
             .build()
+    }
+
+    @Bean
+    @Profile("local")
+    fun amazonSQSAsync(): SqsAsyncClient {
+        return SqsAsyncClient.builder().endpointOverride(URI.create("http://localhost:9324")).credentialsProvider(
+            StaticCredentialsProvider.create(
+                AwsBasicCredentials.create("accessKey", "secretKey")
+            )
+        ).region(Region.US_EAST_1).build()
     }
 
     @Bean

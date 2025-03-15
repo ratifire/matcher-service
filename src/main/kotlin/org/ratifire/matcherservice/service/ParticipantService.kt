@@ -1,9 +1,7 @@
 package org.ratifire.matcherservice.service
 
-import org.bson.types.ObjectId
 import org.ratifire.matcherservice.converter.ParticipantMapper
 import org.ratifire.matcherservice.dto.ParticipantDto
-import org.ratifire.matcherservice.dto.UpdateRequestDto
 import org.ratifire.matcherservice.entity.ParticipantEntity
 import org.ratifire.matcherservice.exeption.ParticipantException
 import org.ratifire.matcherservice.repository.ParticipantRepository
@@ -17,8 +15,9 @@ class ParticipantService(
 ) {
 
     fun save(participant: ParticipantDto): ParticipantEntity {
-        if (validateParticipant(participant) && isParticipantRequestExist(participant)) {
-            throw ParticipantException("participant object is already registered or have incorrect state")
+        if (!validateParticipant(participant) || isParticipantRequestExist(participant)) {
+            throw ParticipantException("Participant object with ID " + participant.id + " is already registered or " +
+                    "have size of time slots")
         }
 
         val participantEntity = participantMapper.toEntity(participant)

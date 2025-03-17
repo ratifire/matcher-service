@@ -28,9 +28,9 @@ class CustomParticipantRepositoryImpl(private val mongoTemplate: MongoTemplate) 
 
             ParticipantType.INTERVIEWER -> {
                 Criteria().orOperator(
-                    Criteria.where("masteryLevel").lt(participant.masteryLevel), Criteria().andOperator(
+                    Criteria.where("masteryLevel").lte(participant.masteryLevel), Criteria().andOperator(
                         Criteria.where("masteryLevel").`is`(participant.masteryLevel),
-                        Criteria.where("averageMark").lt(participant.averageMark)
+                        Criteria.where("averageMark").lte(participant.averageMark)
                     )
                 )
             }

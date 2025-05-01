@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ParticipantSender(
-    private val rabbitmqTemplate: SqsTemplate
+    private val sqsTemplate: SqsTemplate
 ) {
 
     fun sendMatchedInterviewParticipants(pairedParticipantDto: PairedParticipantDto) {
@@ -18,6 +18,6 @@ class ParticipantSender(
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
         val payload: String = objectMapper.writeValueAsString(pairedParticipantDto)
-        rabbitmqTemplate.send("matched-participant", payload)
+        sqsTemplate.send("matched-participant", payload) // todo queque name need to be moved to the config file
     }
 }

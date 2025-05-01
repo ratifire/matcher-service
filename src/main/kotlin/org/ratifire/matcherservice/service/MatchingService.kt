@@ -38,21 +38,20 @@ class MatchingService(
                 ParticipantType.INTERVIEWER -> PairedParticipantDto(
                     interviewerId = it.key.participantId,
                     candidateId = participant.participantId,
-                    interviewerParticipantId = it.key.id!!,
-                    candidateParticipantId = participant.id!!,
+                    interviewerParticipantId = it.key.id,
+                    candidateParticipantId = participant.id,
                     date = it.value
                 )
                 ParticipantType.CANDIDATE -> PairedParticipantDto(
                     interviewerId = participant.participantId,
                     candidateId = it.key.participantId,
-                    interviewerParticipantId = participant.id!!,
-                    candidateParticipantId = it.key.id!!,
+                    interviewerParticipantId = participant.id,
+                    candidateParticipantId = it.key.id,
                     date = it.value
                 )
             }
 
             participantSender.sendMatchedInterviewParticipants(pairedParticipantDto)
-            logger.info("interview is paired") // remove
         }.map {
             participantService.save(
                 it.key.copy(
@@ -61,7 +60,6 @@ class MatchingService(
                     matchedInterview = it.key.matchedInterview + 1
                 )
             )
-            logger.info("interviewer is updated") // remove
             it.value
         }.toSet().let {
             participantService.save(

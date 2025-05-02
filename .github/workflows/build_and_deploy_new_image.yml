@@ -7,16 +7,17 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Select environment to deploy (prod, dev)'
+        description: 'Select environment to deploy (prod, dev or qa)'
         required: true
         default: 'dev'
         type: choice
         options:
           - dev
+          - qa
           - prod
-  push:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
 
 env:
   ZOOM_CLIENT_ID: ${{secrets.ZOOM_CLIENT_ID}}

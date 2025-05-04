@@ -1,0 +1,3 @@
+bucket  = "skillzzy-matcher-terraform-qa"
+key     = "AWS/build-prod-matcher-deploy-tstates/terraform.tfstate"
+region  = "eu-north-1"

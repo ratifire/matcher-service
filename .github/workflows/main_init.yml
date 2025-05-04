@@ -1,12 +1,12 @@
 name: Main_init
 
 on:
-  # schedule:
-  #   - cron: '00 05 * * *'
+#  schedule:
+#    - cron: '00 05 * * *'
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Select environment to deploy (prod, dev)'
+        description: 'Select environment to deploy (prod, dev or qa)'
         required: true
         default: 'dev'
         type: choice
@@ -14,7 +14,6 @@ on:
           - dev
           - qa
           - prod
-
 jobs:
   deploy:
     runs-on: ubuntu-latest

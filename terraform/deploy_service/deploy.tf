@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "matcher_cluster" {
 }
 
 resource "aws_launch_template" "ecs_matcher_launch" {
-  name_prefix            = "ecs_matcher_launch"
+  name_prefix            = "ecs_matcher_launch_${var.deploy_profile}"
   image_id               = data.aws_ami.aws_linux_latest_ecs.image_id
   instance_type          = var.instance_type
   vpc_security_group_ids = [data.aws_security_group.vpc_matcher_security_group.id]
@@ -156,6 +156,6 @@ resource "aws_lb_target_group" "http_ecs_matcher_tg" {
     unhealthy_threshold = 2
     interval            = 60
     protocol            = "HTTP"
-    path                = "/actuator/health"
+    path                = "/health"
   }
 }

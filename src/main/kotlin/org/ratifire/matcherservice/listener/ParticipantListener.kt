@@ -18,7 +18,7 @@ class ParticipantListener(
 ) {
     private val logger: Logger = Logger.getLogger(ParticipantListener::class.java.name)
 
-    @SqsListener("participantQueue")
+    @SqsListener("\${backend-service.received-sqs-endpoint}")
     fun participantRouter(@Header("messageType") type: SqsMessageType, payload: String) {
         logger.info("consumed participant event $type")
         val objectMapper = jacksonObjectMapper()

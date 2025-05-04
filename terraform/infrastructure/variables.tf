@@ -1,5 +1,5 @@
 variable "max_untagged_images" {
-  description = "The maximum number of untagged images to retain in the repository."
+  description = "The maximum number of untagged images to retain in the repository"
   default     = 2
 }
 
@@ -20,7 +20,7 @@ variable "repository_name" {
 
 variable "list_of_ports" {
   description = "The list of ports the app will use for each other"
-  default     = ["22", "80", "3000", "8080", "5432", "443"]
+  default     = ["22", "80", "3000", "8080", "5432", "443", "27017"]
 }
 
 variable "cidr_blocks" {

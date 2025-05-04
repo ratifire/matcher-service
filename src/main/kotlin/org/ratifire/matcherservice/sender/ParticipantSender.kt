@@ -5,10 +5,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import org.ratifire.matcherservice.dto.PairedParticipantDto
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
 class ParticipantSender(
+    @Value("\${backend-service.send-sqs-endpoint}") private val matchedParticipantQueue: String,
     private val rabbitmqTemplate: SqsTemplate
 ) {
 
@@ -18,6 +20,6 @@ class ParticipantSender(
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
         val payload: String = objectMapper.writeValueAsString(pairedParticipantDto)
-        rabbitmqTemplate.send("matched-participant", payload)
+        rabbitmqTemplate.send(matchedParticipantQueue, payload)
     }
 }

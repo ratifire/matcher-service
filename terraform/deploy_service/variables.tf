@@ -105,7 +105,14 @@ variable "aws_ecs_task_definition_family" {
   type        = string
 }
 
-variable "mongodb_public_key" {}
-variable "mongodb_private_key" {}
-variable "project_id" {}
-variable "db_user_password" {}
+variable "deploy_profile" {
+  default = "dev"
+}
+
+variable "matched_participant_name" {
+  type = string
+}
+
+variable "participant_queue_name" {
+  type = string
+}

@@ -1,6 +1,5 @@
 package org.ratifire.matcherservice.dto
 
-import org.bson.types.ObjectId
 import org.ratifire.matcherservice.enums.ParticipantType
 import java.util.Date
 

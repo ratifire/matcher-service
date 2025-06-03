@@ -50,13 +50,22 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      - name: Update application.properties with environment variables
+      - name: Update application.properties with secrets
         run: |
-          sed -i 's|<AWS_ACCESS_KEY_ID>|'${{ secrets.AWS_ACCESS_KEY_ID }}'|g' src/main/resources/application.properties
-          sed -i 's|<AWS_SECRET_ACCESS_KEY>|'${{ secrets.AWS_SECRET_ACCESS_KEY }}'|g' src/main/resources/application.properties
-          sed -i 's|<AWS_REGION>|'${{ vars.AWS_REGION }}'|g' src/main/resources/application.properties
-          sed -i 's|<MONGO_DB_URI>|'${{ vars.MONGO_DB_URI }}'|g' src/main/resources/application-${{ github.event.inputs.environment }}.properties
+          AWS_ACCESS_KEY_ID_ESCAPED=$(printf '%s' "$AWS_ACCESS_KEY_ID" | sed 's/[\/&]/\\&/g')
+          AWS_SECRET_ACCESS_KEY_ESCAPED=$(printf '%s' "$AWS_SECRET_ACCESS_KEY" | sed 's/[\/&]/\\&/g')
+          AWS_REGION_ESCAPED=$(printf '%s' "$AWS_REGION" | sed 's/[\/&]/\\&/g')
+          MONGO_DB_URI_ESCAPED=$(printf '%s' "$MONGO_DB_URI" | sed 's/[\/&]/\\&/g')
 
+          sed -i "s|<AWS_ACCESS_KEY_ID>|$AWS_ACCESS_KEY_ID_ESCAPED|g" src/main/resources/application.properties
+          sed -i "s|<AWS_SECRET_ACCESS_KEY>|$AWS_SECRET_ACCESS_KEY_ESCAPED|g" src/main/resources/application.properties
+          sed -i "s|<AWS_REGION>|$AWS_REGION_ESCAPED|g" src/main/resources/application.properties
+          sed -i "s|<MONGO_DB_URI>|$MONGO_DB_URI_ESCAPED|g" src/main/resources/application-${{ github.event.inputs.environment }}.properties
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          MONGO_DB_URI: ${{ secrets.MONGO_DB_URI }}
       - name: Grant execute permission for Gradle wrapper
         run: chmod +x ./gradlew
 

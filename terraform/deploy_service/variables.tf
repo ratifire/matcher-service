@@ -47,7 +47,7 @@ variable "vpc" {
 }
 
 variable "target_group_name" {
-  default = "http-ecs-back-tg"
+  default = "http-ecs-matcher-tg"
 }
 
 variable "security_group_name" {

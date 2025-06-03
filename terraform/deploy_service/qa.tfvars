@@ -38,7 +38,7 @@ matcher_cluster_name = "matcher-cluster-qa"
 
 matcher_container_name = "matcher-container-qa"
 
-target_group_name = "http-ecs-back-tg-qa"
+target_group_name = "http-ecs-matcher-tg-qa"
 
 matched_participant_name = "matchedParticipantQa"
 

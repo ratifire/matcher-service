@@ -3,6 +3,7 @@ name: Build
 env:
   IMAGE_TAG: ${{ github.sha }}
   ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  MONGO_DB_URI: ${{ secrets.MONGO_DB_URI }}
 on:
   workflow_dispatch:
     inputs:
@@ -50,7 +51,7 @@ jobs:
           sed -i 's|<AWS_ACCESS_KEY_ID>|'${{ secrets.AWS_ACCESS_KEY_ID }}'|g' src/main/resources/application.properties
           sed -i 's|<AWS_SECRET_ACCESS_KEY>|'${{ secrets.AWS_SECRET_ACCESS_KEY }}'|g' src/main/resources/application.properties
           sed -i 's|<AWS_REGION>|'${{ vars.AWS_REGION }}'|g' src/main/resources/application.properties
-          sed -i 's|<MONGO_DB_URI>|'${{ secrets.MONGO_DB_URI }}'|g' src/main/resources/application-${{ github.event.inputs.environment }}.properties
+          sed -i 's|<MONGO_DB_URI>|'${{ vars.MONGO_DB_URI }}'|g' src/main/resources/application-${{ github.event.inputs.environment }}.properties
 
       - name: Grant execute permission for Gradle wrapper
         run: chmod +x ./gradlew
